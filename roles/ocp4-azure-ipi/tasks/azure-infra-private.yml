@@ -1,0 +1,70 @@
+---
+
+- name: Create resource group
+  azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+
+- name: Create virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_vnet_name }}"
+    address_prefixes: "{{ azure_vnet_cidr }}"
+
+- name: Add subnet for control-plane
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: control-plane
+    address_prefix: "{{ azure_subnet_controlplane }}"
+    virtual_network: "{{ azure_vnet_name }}"
+
+- name: Add subnet for compute
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: compute
+    address_prefix: "{{ azure_subnet_compute }}"
+    virtual_network: "{{ azure_vnet_name }}"
+
+- name: Add subnet for bastion
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: bastion
+    address_prefix: "{{ azure_subnet_bastion }}"
+    virtual_network: "{{ azure_vnet_name }}"
+
+# https://docs.openshift.com/container-platform/4.6/installing/installing_azure/installing-azure-private.html#private-clusters-about-azure_installing-azure-private
+# https://github.com/ansible/ansible/issues/64036
+- name: Create private dns zone
+  azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: network
+    resource_type: privateDnsZones
+    resource_name: "{{ azure_dns_zone }}"
+    api_version: "2018-09-01"
+    body:
+      location: global
+    idempotency: yes
+
+# https://docs.microsoft.com/en-us/azure/dns/private-dns-virtual-network-links
+# https://docs.microsoft.com/en-us/rest/api/dns/privatedns/virtualnetworklinks/createorupdate
+- name: Link private dns to vnet
+  azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: network
+    resource_type: privateDnsZones
+    resource_name: "{{ azure_dns_zone }}"
+    subresource:
+      - type: virtualNetworkLinks
+        name: "{{ azure_vnet_name}}_link"
+    api_version: "2018-09-01"
+    body:
+      location: global
+      properties:
+        virtualNetwork:
+          id: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.Network/virtualNetworks/{{ azure_vnet_name }}"
+        registrationEnabled: false
+    idempotency: yes
+  register: result_link
+  retries: 5
+  delay: 10
+  until: result_link is not failed

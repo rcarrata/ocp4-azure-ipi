@@ -1,0 +1,85 @@
+## Registry Container
+- name: Stop container if it is running
+  shell: podman stop mirror-registry && podman rm mirror-registry
+  ignore_errors: true
+
+- name: Stop container if it is running (root)
+  shell: podman stop mirror-registry && podman rm mirror-registry
+  become: true
+  ignore_errors: true
+
+## Pull ubi7 for test podman and registry
+- name: Pull UBI 7.7 image
+  podman_image:
+    name: registry.access.redhat.com/ubi7/ubi:7.7
+
+# https://stackoverflow.com/questions/57468525/custom-docker-location-causes-selinux-labels-unlabeled
+# Error relocating /entrypoint.sh: RELRO protection failed: Permission denied
+- name: Put Selinux in Permissive mode
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Start container registry container
+  vars:
+    container_image: docker.io/library/registry:2
+    container_name: mirror-registry
+    container_run_args: >-
+      -p 5000:5000
+      --restart=always
+      -v /opt/registry/data:/var/lib/registry:z
+      -v /opt/registry/auth:/auth:z
+      -e "REGISTRY_AUTH=htpasswd"
+      -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm"
+      -e "REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd"
+      -v /opt/registry/certs:/certs:z
+      -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt
+      -e REGISTRY_HTTP_TLS_KEY=/certs/registry.key
+    container_state: running
+  import_role:
+    name: ../roles/podman_container_systemd
+  become: true
+
+- name: Let the container start
+  pause:
+    seconds: 5
+
+- name: Test to ensure registry is accessible
+  uri:
+    url: https://{{ registry_url }}/v2/_catalog
+    status_code: 200
+    method: GET
+    url_username: "{{ registry_user }}"
+    url_password: "{{ registry_password }}"
+
+- name: Test registry functionality with Podman Login
+  command: "podman login -u {{ registry_user }} -p {{ registry_password }} {{ registry_url }}"
+
+- name: Test registry functionality with Podman Tag
+  command: "podman tag registry.access.redhat.com/ubi7/ubi:7.7 {{ registry_url }}/ubi7/ubi:7.7"
+
+- name: Test registry functionality pushing the ubi7 to the new registry
+  command: "podman push {{ registry_url }}/ubi7/ubi:7.7"
+
+- name: Test to ensure registry is accessible
+  uri:
+    url: https://{{ registry_url }}/v2/_catalog
+    status_code: 200
+    method: GET
+    url_username: "{{ registry_user }}"
+    url_password: "{{ registry_password }}"
+  register: registry_catalog
+
+- name: Registry contains these repositories
+  debug:
+    msg: "{{ registry_catalog.msg }}"
+
+
+
+
+
+
+
+
+
+

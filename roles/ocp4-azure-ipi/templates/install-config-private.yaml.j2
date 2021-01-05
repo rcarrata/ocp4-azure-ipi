@@ -1,0 +1,56 @@
+apiVersion: v1
+baseDomain: {{ ocp_base_domain_name }}
+imageContentSources:
+- mirrors:
+  - {{ registry_url }}/openshift-release-dev
+  source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - {{ registry_url }}/openshift-release-dev
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  platform:
+    azure:
+      osDisk:
+        diskSizeGB: 120
+      type: Standard_D4s_v3
+  replicas: 3
+compute:
+- hyperthreading: Enabled
+  name: worker
+  platform:
+    azure:
+      type: Standard_D4s_v3
+      osDisk:
+        diskSizeGB: 120
+  replicas: 2
+metadata:
+  name: {{ cluster_name }}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  machineCIDR: {{ ocp_machine_cidr }}
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+platform:
+  azure:
+    region: {{ azure_location }}
+    baseDomainResourceGroupName: {{ azure_resource_group }}
+    networkResourceGroupName: {{ azure_resource_group }}
+    virtualNetwork: {{ azure_vnet_name }}
+    controlPlaneSubnet: control-plane
+    computeSubnet: compute
+publish: Internal
+proxy:
+  httpProxy: http://{{ registry_cn }}:3128
+  httpsProxy: http://{{ registry_cn }}:3128
+  noProxy: .{{ azure_dns_root }}
+fips: false
+sshKey: {{ azure_vm_admin_pub_key }}
+pullSecret: |
+{{ registry_private_pull_secret | indent(2, True) }}
+additionalTrustBundle: |
+{{ registry_ca | indent(2, True) }}

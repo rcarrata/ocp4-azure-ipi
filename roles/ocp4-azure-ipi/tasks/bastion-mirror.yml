@@ -1,0 +1,116 @@
+---
+
+# This is for avoid to have to mess with the PATHs
+#- name: Copy the Openshift Installer and CLI in a well-known path
+#  copy:
+#    src: "{{ user_path }}/{{ item }}"
+#    dest: "/usr/bin/{{ item }}"
+#    mode: '755'
+#    remote_src: yes
+#  loop:
+#    - openshift-install
+#    - oc
+#  when: ocp4_files.changed
+
+# Create mirror environment variables
+## https://red.ht/3aFwls6
+- name: Load pull-secret from registry.redhat.io
+  include_vars:
+    file: "{{ registry_pull_secret_path }}"
+    name: imported_var
+
+- name: Add private registry auth to the preexistent pull-secret
+  set_fact:
+    imported_var: "{{ imported_var | combine({ 'auths': { registry_url : {'auth': registry_auth | b64encode, 'email': registry_email } } }, recursive=True ) }}"
+# If recursive=True, recurse into nested hash and merge their keys:
+
+- name: Write var to file
+  copy:
+    content: "{{ imported_var | to_nice_json }}"
+    dest: "{{ registry_custom_pull_secret_path }}"
+
+- name: Create env file for use it in the future or for checking purposes
+  copy:
+    dest: "/home/{{ azure_vm_admin_username }}/mirror.env"
+    content: |
+        OCP_RELEASE="{{ ocp_img }}-x86_64"
+        LOCAL_REGISTRY="{{ registry_url }}"
+        LOCAL_REPOSITORY="openshift-release-dev"
+        PRODUCT_REPO="openshift-release-dev"
+        LOCAL_SECRET_JSON="{{ registry_custom_pull_secret_path }}"
+        RELEASE_NAME="ocp-release"
+        CLUSTER_NAME="{{ cluster_name }}"
+        OC_PATH="{{ user_path }}"
+
+- name: Create facts for mirror environment
+  set_fact:
+    OCP_RELEASE="{{ ocp_img }}-x86_64"
+    LOCAL_REGISTRY="{{ registry_url }}"
+    LOCAL_REPOSITORY="openshift-release-dev"
+    PRODUCT_REPO="openshift-release-dev"
+    LOCAL_SECRET_JSON="{{ registry_custom_pull_secret_path }}"
+    RELEASE_NAME="ocp-release"
+    CLUSTER_NAME="{{ cluster_name }}"
+
+#- name: Add env vars to .bashrc
+#  lineinfile:
+#    path: "${HOME}/.bashrc"
+#    regexp: "^export {{ item.entry }}"
+#    line: "export {{ item.entry }}={{ item.val }}"
+#  loop:
+#    - entry: "LOCAL_REGISTRY"
+#      val: "{{ registry_url }}"
+#    - entry: "LOCAL_REPOSITORY"
+#      val: "openshift-release-dev"
+#    - entry: "LOCAL_SECRET_JSON"
+#      val: "{{ registry_custom_pull_secret_path }}"
+#    - entry: "PRODUCT_REPO"
+#      val: "openshift-release-dev"
+#    - entry: "RELEASE_NAME"
+#      val: "ocp-release"
+#    - entry: "OCP_RELEASE"
+#      val: "{{ ocp_img }}"
+#    - entry: "CLUSTER_NAME"
+#      val: "{{ cluster_name }}"
+#    - entry: "OC_PATH"
+#      val: "{{ user_path }}"
+
+
+#- shell: >-
+#    'echo ${OCP_RELEASE}
+#    echo ${OCP_RELEASE}
+#    echo ${LOCAL_REGISTRY}
+#    echo ${LOCAL_REPOSITORY}
+#    echo ${PRODUCT_REPO}
+#    echo ${LOCAL_SECRET_JSON}
+#    echo ${RELEASE_NAME}
+#    echo ${CLUSTER_NAME}'
+
+- shell: whoami
+
+- name: Mirror OpenShift content to local registry
+  shell: "oc adm release mirror -a {{ LOCAL_SECRET_JSON }} --from=quay.io/{{ PRODUCT_REPO }}/{{ RELEASE_NAME }}:{{ OCP_RELEASE }} --to={{ LOCAL_REGISTRY }}/{{ LOCAL_REPOSITORY }} --to-release-image={{ LOCAL_REGISTRY }}/{{ LOCAL_REPOSITORY }}:{{ OCP_RELEASE }}"
+
+- name: Verify that images are present and pullable
+  podman_image:
+    name: "{{ registry_url }}/{{ LOCAL_REPOSITORY }}:{{ ocp_img }}-operator-lifecycle-manager"
+    auth_file: "{{ registry_custom_pull_secret_path }}"
+
+- name: Check release info to make sure it works
+  shell: 'oc adm release info -a {{ LOCAL_SECRET_JSON }} "{{ LOCAL_REGISTRY }}/{{ LOCAL_REPOSITORY }}:{{ OCP_RELEASE }}"'
+  register: release_info
+
+- name: Extract openshift-install binary
+  shell: 'oc adm release extract -a {{ LOCAL_SECRET_JSON }} --command=openshift-install "{{ LOCAL_REGISTRY }}/{{ LOCAL_REPOSITORY }}:{{ OCP_RELEASE }}" --to={{ user_path }}'
+
+## Get CA of the Registry for Complete the Create Config install config
+- name: Get CA
+  slurp:
+    src: "{{ registry_path }}/registry.crt"
+  register: ca_file
+
+## Get CA of the Registry for Complete the Create Config install config
+- name: Define the private pull secret with the CA of the registry
+  set_fact:
+    registry_private_pull_secret: "{{ imported_var | combine({ 'auths': { registry_url : {'auth': registry_auth | b64encode, 'email': registry_email } } }) | to_nice_json }}"
+    registry_ca: "{{ ca_file.content | b64decode }}"

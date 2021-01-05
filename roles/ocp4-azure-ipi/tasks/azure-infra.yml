@@ -1,0 +1,12 @@
+---
+
+- name: Create resource group
+  azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+
+- name: Create the root DNS zone
+  azure_rm_dnszone:
+    name: "{{ azure_dns_zone }}"
+    resource_group: "{{ azure_resource_group }}"
+

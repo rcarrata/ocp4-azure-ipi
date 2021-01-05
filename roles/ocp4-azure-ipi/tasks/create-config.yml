@@ -1,0 +1,26 @@
+---
+
+- name: '[CREATE-CONFIG] Generate config install-config.yaml'
+  template:
+    src: install-config.yaml.j2
+    dest: "{{ user_path }}/install-config.yaml"
+  when: mode != "private"
+
+- name: '[CREATE-CONFIG] Generate config install-config.yaml'
+  template:
+    src: install-config-private.yaml.j2
+    dest: "{{ user_path }}/install-config.yaml"
+  when: mode == "private"
+
+- name: "[CREATE-CONFIG] Make a copy of the cluster install config "
+  block:
+    - name: '[CREATE-CONFIG] Make a copy of the cluster install config for backup purposes'
+      copy:
+        src: "{{ user_path }}/install-config.yaml"
+        dest: "{{ user_path }}/install-config.yaml.bck"
+  rescue:
+    - name: '[CREATE-CONFIG] Make a copy of the cluster install config for backup purposes'
+      copy:
+        src: "{{ user_path }}/install-config.yaml"
+        dest: "{{ user_path }}/install-config.yaml.bck"
+        remote_src: true

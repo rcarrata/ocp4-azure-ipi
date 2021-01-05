@@ -1,0 +1,85 @@
+---
+
+- name: Create Network Security Group that allows SSH
+  azure_rm_securitygroup:
+    resource_group: "{{ azure_vm_resource_group }}"
+    name: "{{ azure_vm_name }}"
+    rules:
+      - name: SSH
+        protocol: Tcp
+        destination_port_range: 22
+        access: Allow
+        priority: 1001
+        direction: Inbound
+        direction: Inbound
+      - name: Registry
+        protocol: Tcp
+        destination_port_range: 5000
+        access: Allow
+        priority: 1002
+        direction: Inbound
+
+- name: Create VM
+  azure_rm_virtualmachine:
+    resource_group: "{{ azure_vm_resource_group }}"
+    name: "{{ azure_vm_name }}"
+    vm_size: Standard_B1s
+    admin_username: "{{ azure_vm_admin_username }}"
+    ssh_public_keys:
+      - key_data: "{{ azure_vm_admin_pub_key }}"
+        path: "/home/{{ azure_vm_admin_username }}/.ssh/authorized_keys"
+    virtual_network_resource_group: "{{ azure_vm_resource_group_vnet }}"
+    virtual_network_name: "{{ azure_vnet_name }}"
+    subnet_name: "{{ azure_vm_subnet }}"
+    public_ip_allocation_method: Dynamic
+    ssh_password_enabled: false
+    image:
+      offer: CentOS
+      publisher: OpenLogic
+      sku: 8.0
+      version: latest
+      no_log: true
+  register: output
+
+- name: Get IP
+  set_fact:
+    azure_vm_private_ip: "{{ output.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
+    azure_vm_public_ip: "{{ output.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+
+- name: Create A record
+  azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: network
+    resource_type: privateDnsZones
+    resource_name: "{{ azure_dns_zone }}"
+    subresource:
+      - name: "{{ registry_a_record }}"
+        type: A
+    api_version: "2018-09-01"
+    body:
+      properties:
+        metadata:
+          key1: "{{ registry_a_record }}"
+        ttl: 3600
+        aRecords:
+          - ipv4Address: "{{ azure_vm_private_ip }}"
+    idempotency: yes
+
+
+- name: Add azure vm into host
+  add_host:
+    name: bastion
+    groups: "inv"
+    ansible_host: '{{ azure_vm_public_ip }}'
+    ansible_connection: ssh
+    ansible_user: "{{ azure_vm_admin_username }}"
+    ansible_ssh_private_key_file: "{{ azure_vm_admin_key_path }}"
+    become: true
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  #changed_when: false
+
+- name: Wait for the SSH port to come online
+  wait_for:
+    port: 22
+    host: '{{ azure_vm_public_ip }}'
+    timeout: 600

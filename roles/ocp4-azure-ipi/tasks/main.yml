@@ -1,0 +1,35 @@
+---
+
+### Tasks for a IPI Connected Installation
+#- block:
+#    - import_tasks: azure-infra.yml
+#    - import_tasks: download.yml
+#    - import_tasks: create_config.yml
+#    - import_tasks: install.yml
+#    - import_tasks: print_info.yml
+#  when:
+#    - cloud == "azure"
+#    - mode != "private"
+
+## Tasks for a IPI Private/Disconnected Installation
+- block:
+    #- import_tasks: azure-infra-private.yml
+    - import_tasks: azure-bastion-infra.yml
+  when:
+    - cloud == "azure"
+    - mode == "private"
+    - action == "provision-infra"
+
+- block:
+    - import_tasks: azure-login.yml
+    #- import_tasks: bastion-packages.yml
+    #- import_tasks: bastion-registry.yml
+    #- import_tasks: download.yml
+    #- import_tasks: bastion-mirror.yml
+    #- import_tasks: create-config.yml
+    - import_tasks: install.yml
+  when:
+    - cloud == "azure"
+    - mode == "private"
+    - action == "prepare-bastion"
+

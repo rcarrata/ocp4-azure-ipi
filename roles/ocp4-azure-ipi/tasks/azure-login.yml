@@ -1,0 +1,35 @@
+---
+
+- name: Import microsoft key for AZ CLI
+  rpm_key:
+    state: present
+    key: https://packages.microsoft.com/keys/microsoft.asc
+
+- name: Add Azure Repository
+  yum_repository:
+    name: azure-cli
+    description: azure-cli
+    baseurl: https://packages.microsoft.com/yumrepos/azure-cli
+    gpgcheck: yes
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+
+
+- name: Ensure AZ CLI is installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+     - azure-cli
+
+- name: Login to Azure
+  command: >-
+    az login --service-principal
+    -u {{ azure_client_id | quote }}
+    -p {{ azure_secret | quote }}
+    --tenant {{ azure_tenant | quote }}
+
+- name: Add osServicePrincipal.json file for OpenShift Installer
+  template:
+    src: "osServicePrincipal.json.j2"
+    dest: "/root/.azure/osServicePrincipal.json"
+    mode: 0600

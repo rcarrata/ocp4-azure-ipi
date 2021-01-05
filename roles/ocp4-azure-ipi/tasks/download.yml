@@ -1,0 +1,34 @@
+---
+
+- name: '[DOWNLOAD-OC] Create a directory for the installation'
+  file:
+    name: "{{ user_path }}"
+    state: directory
+
+- name: '[DOWNLOAD-OC] Download the required ocp4 tooling'
+  get_url:
+    url: "{{ var_installer_baseurl }}/{{ pkg }}"
+    dest: "{{ user_path }}/{{ pkg }}"
+  loop:
+    - "{{ var_installer_program }}"
+    - "{{ var_installer_clienttools }}"
+  loop_control:
+    loop_var: pkg
+  register: ocp4_files
+
+- name: '[DOWNLOAD-OC] Create a user-writable directory for tools'
+  file:
+    name: "{{ user_path }}"
+    state: directory
+
+- name: '[DOWNLOAD-OC] Ensure downloaded installers are unarchived'
+  unarchive:
+    src: "{{ user_path }}/{{ pkg }}"
+    dest: "{{ user_path }}"
+    remote_src: true
+  loop:
+    - "{{ var_installer_program }}"
+    - "{{ var_installer_clienttools }}"
+  loop_control:
+    loop_var: pkg
+  when: ocp4_files.changed
