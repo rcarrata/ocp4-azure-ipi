@@ -1,0 +1,6 @@
+ocp4-azure-ipi
+.vault-file-password
+vault/*
+vault/azure.yml
+vault/ssh-key.pub
+vault/ssh-key

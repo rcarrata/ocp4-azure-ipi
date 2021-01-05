@@ -1,0 +1,7 @@
+# User Path
+install_path: "/tmp"
+user_path: "{{ install_path }}/{{ cluster_name }}"
+
+# MachineSets
+kube_label: "node-role.kubernetes.io"
+infra_label: "infra"

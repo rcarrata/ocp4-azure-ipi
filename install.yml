@@ -1,0 +1,15 @@
+---
+
+- name: "Create Azure Openshift Cluster"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars.yml
+  environment:
+    AZURE_SUBSCRIPTION_ID: "{{ azure_subscription_id }}"
+    AZURE_TENANT: "{{ azure_tenant }}"
+    AZURE_CLIENT_ID: "{{ azure_client_id }}"
+    AZURE_SECRET: "{{ azure_secret }}"
+  roles:
+    - ocp4-azure-ipi

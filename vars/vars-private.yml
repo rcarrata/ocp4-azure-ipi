@@ -1,0 +1,46 @@
+# Openshift parameters
+cloud: "azure"
+mode: "private"
+ocp4_version: '4.5.24'
+ocp_img: "{{ ocp4_version }}"
+cluster_name: 'ocp4'
+ocp_base_domain_name: "{{ azure_dns_zone }}"
+ocp_machine_cidr: "{{ azure_vnet_cidr }}"
+local_kubeconfig: '~/.kube/{{ cluster_name }}'
+user_path: "/home/{{ azure_vm_admin_username }}/{{ cluster_name }}"
+
+# Azure parameters
+azure_dns_root: lab.local
+azure_resource_group: ocp4-test
+azure_location: eastus
+azure_vnet_name: ocp4-vnet
+azure_dns_zone: "az.{{ azure_dns_root }}"
+azure_vnet_cidr: 10.10.0.0/16
+azure_subnet_controlplane: 10.10.1.0/24
+azure_subnet_compute: 10.10.10.0/24
+azure_subnet_bastion: 10.10.99.0/24
+master_instance_count: 3
+worker_instance_count: 3
+
+# Azure vm parameters
+azure_vm_name: bastion
+azure_vm_resource_group: "{{ azure_resource_group }}"
+azure_vm_resource_group_vnet: "{{ azure_resource_group }}"
+azure_vm_subnet: bastion
+azure_vm_admin_username: az-admin
+azure_vm_admin_key_path: "vault/ssh-key"
+azure_vm_admin_pub_key: "{{ lookup('file', 'vault/ssh-key.pub') }}"
+
+# Bastion Registry parameters
+registry_user: registry
+registry_password: password
+registry_port: 5000
+registry_url: "{{ registry_cn }}:{{ registry_port }}"
+registry_path: "/opt/registry/certs"
+registry_cert_path: "{{ registry_path }}/registry.crt"
+registry_cn: "{{ azure_vm_name }}.{{ azure_dns_zone }}"
+registry_email: rcarrata@redhat.com
+registry_pull_secret_path: vault/pull-secret.json
+registry_auth: "{{ registry_user }}:{{ registry_password }}"
+registry_custom_pull_secret_path: "/home/{{ azure_vm_admin_username }}/custom-pull.json"
+registry_a_record: "{{ azure_vm_name }}"
