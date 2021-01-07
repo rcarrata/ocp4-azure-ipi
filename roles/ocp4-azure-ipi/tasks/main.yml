@@ -25,8 +25,8 @@
     #- import_tasks: bastion-packages.yml
     #- import_tasks: bastion-registry.yml
     #- import_tasks: download.yml
-    #- import_tasks: bastion-mirror.yml
-    #- import_tasks: create-config.yml
+    - import_tasks: bastion-mirror.yml
+    - import_tasks: create-config.yml
     - import_tasks: install.yml
   when:
     - cloud == "azure"

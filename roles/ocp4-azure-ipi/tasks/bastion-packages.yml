@@ -10,6 +10,7 @@
      - httpd-tools
      - epel-release
      - squid
+     - python3-psutil
 
 - name: Ensure requirement are installed
   yum:
@@ -74,12 +75,3 @@
     crypt_scheme: bcrypt
     name: "{{ registry_user }}"
     password: "{{ registry_password }}"
-
-
-
-
-
-
-
-
-

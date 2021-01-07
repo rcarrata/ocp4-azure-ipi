@@ -73,13 +73,3 @@
 - name: Registry contains these repositories
   debug:
     msg: "{{ registry_catalog.msg }}"
-
-
-
-
-
-
-
-
-
-
