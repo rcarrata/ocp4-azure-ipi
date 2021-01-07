@@ -1,5 +1,6 @@
 ---
 
+## TODO: Unify in one file only
 - name: '[CREATE-CONFIG] Generate config install-config.yaml'
   template:
     src: install-config.yaml.j2

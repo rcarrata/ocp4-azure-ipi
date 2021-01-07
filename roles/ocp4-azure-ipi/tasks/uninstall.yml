@@ -1,0 +1,16 @@
+---
+
+- name: 'DESTROY Cluster in foreground'
+  command: "{{ user_path }}/openshift-install destroy cluster --dir {{ user_path }}"
+  ignore_errors: yes
+
+- name: 'Remove deleted cluster data'
+  file:
+    path: "{{ user_path }}"
+    state: absent
+
+- name: 'Wait for the destroy to finish - may take around 5 minutes'
+  wait_for:
+    path: "{{ user_path }}"
+    state: absent
+    timeout: 300

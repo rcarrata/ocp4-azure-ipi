@@ -18,7 +18,6 @@
       vars:
         action: provision-infra
 
-
 - name: "[AZURE-PRIVATE] Create Azure Openshift Cluster"
   hosts: inv
   become: true
@@ -37,3 +36,8 @@
       vars:
         action: prepare-bastion
 
+    - name: Install cluster
+      include_role:
+        name: ocp4-azure-ipi
+      vars:
+        action: install

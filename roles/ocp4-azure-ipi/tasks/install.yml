@@ -28,6 +28,7 @@
   copy:
     src: "{{ user_path }}/auth/kubeconfig"
     dest: "{{ local_kubeconfig }}"
+    remote_src: yes
   when:
     - local_kubeconfig is defined
 

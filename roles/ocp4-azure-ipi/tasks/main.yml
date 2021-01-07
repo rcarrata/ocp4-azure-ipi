@@ -13,7 +13,7 @@
 
 ## Tasks for a IPI Private/Disconnected Installation
 - block:
-    #- import_tasks: azure-infra-private.yml
+    - import_tasks: azure-infra-private.yml
     - import_tasks: azure-bastion-infra.yml
   when:
     - cloud == "azure"
@@ -27,9 +27,14 @@
     #- import_tasks: download.yml
     - import_tasks: bastion-mirror.yml
     - import_tasks: create-config.yml
-    - import_tasks: install.yml
   when:
     - cloud == "azure"
     - mode == "private"
     - action == "prepare-bastion"
 
+- block:
+    - import_tasks: install.yml
+  when:
+    - cloud == "azure"
+    - mode == "private"
+    - action == "install"

@@ -1,0 +1,9 @@
+---
+
+- name: Delete the Openshift resource group
+  azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+    state: absent
+    force_delete_nonempty: yes
+

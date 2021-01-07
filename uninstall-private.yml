@@ -1,0 +1,66 @@
+---
+
+- name: "[AZURE-PRIVATE] Destroy Azure Openshift Cluster in Private Mode"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+  tasks:
+
+    - name: Get facts for one Public IP
+      azure_rm_publicipaddress_info:
+        resource_group: "{{ azure_resource_group }}"
+        name: "{{ azure_vm_name }}01"
+      register: output
+
+    - name: Get facts of the bastion host
+      azure_rm_virtualmachine_info:
+        resource_group: "{{ azure_resource_group }}"
+        name: "{{ azure_vm_name }}"
+
+    - debug:
+        msg: "{{ output.publicipaddresses.0.ip_address }}"
+
+    - name: Get IP
+      set_fact:
+        azure_vm_public_ip: "{{ output.publicipaddresses.0.ip_address }}"
+
+    - name: Add azure vm into host
+      add_host:
+        name: bastion
+        groups: "inv"
+        ansible_host: '{{ azure_vm_public_ip }}'
+        ansible_connection: ssh
+        ansible_user: "{{ azure_vm_admin_username }}"
+        ansible_ssh_private_key_file: "{{ azure_vm_admin_key_path }}"
+        become: true
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      #changed_when: false
+
+    - name: Check the ssh connection
+      wait_for:
+        port: 22
+        host: '{{ azure_vm_public_ip }}'
+        timeout: 600
+
+- name: "[AZURE-PRIVATE] Delete Azure Openshift Cluster"
+  hosts: inv
+  become: true
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+  tasks:
+    - name: Delete the Openshift Cluster
+      include_tasks: roles/ocp4-azure-ipi/tasks/uninstall.yml
+
+- name: "[AZURE-PRIVATE] Destroy Azure Openshift Cluster in Private Mode"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+  tasks:
+    - name: Destroy Resource Group of Openshift
+      include_tasks: roles/ocp4-azure-ipi/tasks/azure-infra-destroy.yml
+
