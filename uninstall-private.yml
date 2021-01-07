@@ -14,11 +14,6 @@
         name: "{{ azure_vm_name }}01"
       register: output
 
-    - name: Get facts of the bastion host
-      azure_rm_virtualmachine_info:
-        resource_group: "{{ azure_resource_group }}"
-        name: "{{ azure_vm_name }}"
-
     - debug:
         msg: "{{ output.publicipaddresses.0.ip_address }}"
 

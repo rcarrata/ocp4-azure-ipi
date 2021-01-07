@@ -13,7 +13,6 @@
     gpgcheck: yes
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
 
-
 - name: Ensure AZ CLI is installed
   yum:
     name: "{{ packages }}"
@@ -33,3 +32,9 @@
     src: "osServicePrincipal.json.j2"
     dest: "/root/.azure/osServicePrincipal.json"
     mode: 0600
+
+#- name: Get facts of the bastion host to validate the az login
+#  azure_rm_virtualmachine_info:
+#    resource_group: "{{ azure_resource_group }}"
+#    name: "{{ azure_vm_name }}"
+#  register: az_login

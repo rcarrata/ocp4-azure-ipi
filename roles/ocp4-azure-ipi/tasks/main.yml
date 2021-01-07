@@ -22,9 +22,9 @@
 
 - block:
     - import_tasks: azure-login.yml
-    #- import_tasks: bastion-packages.yml
-    #- import_tasks: bastion-registry.yml
-    #- import_tasks: download.yml
+    - import_tasks: bastion-packages.yml
+    - import_tasks: bastion-registry.yml
+    - import_tasks: download.yml
     - import_tasks: bastion-mirror.yml
     - import_tasks: create-config.yml
   when:

@@ -2,16 +2,18 @@
 cloud: "azure"
 mode: "private"
 ocp4_version: '4.5.24'
+#ocp4_version: '4.6.9'
 ocp_img: "{{ ocp4_version }}"
 cluster_name: 'ocp4'
 ocp_base_domain_name: "{{ azure_dns_zone }}"
 ocp_machine_cidr: "{{ azure_vnet_cidr }}"
 local_kubeconfig: '~/.kube/{{ cluster_name }}'
-user_path: "/home/{{ azure_vm_admin_username }}/{{ cluster_name }}"
+user_path: "/root/{{ cluster_name }}"
 
 # Azure parameters
 azure_dns_root: lab.local
 azure_resource_group: ocp4-test
+#azure_resource_group: ocp4-rg
 azure_location: eastus
 azure_vnet_name: ocp4-vnet
 azure_dns_zone: "az.{{ azure_dns_root }}"
@@ -42,5 +44,5 @@ registry_cn: "{{ azure_vm_name }}.{{ azure_dns_zone }}"
 registry_email: rcarrata@redhat.com
 registry_pull_secret_path: vault/pull-secret.json
 registry_auth: "{{ registry_user }}:{{ registry_password }}"
-registry_custom_pull_secret_path: "/home/{{ azure_vm_admin_username }}/custom-pull.json"
+registry_custom_pull_secret_path: "/root/custom-pull.json"
 registry_a_record: "{{ azure_vm_name }}"

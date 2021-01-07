@@ -1,16 +1,16 @@
 ---
 
 # This is for avoid to have to mess with the PATHs
-#- name: Copy the Openshift Installer and CLI in a well-known path
-#  copy:
-#    src: "{{ user_path }}/{{ item }}"
-#    dest: "/usr/bin/{{ item }}"
-#    mode: '755'
-#    remote_src: yes
-#  loop:
-#    - openshift-install
-#    - oc
-#  when: ocp4_files.changed
+- name: Copy the Openshift Installer and CLI in a well-known path
+  copy:
+    src: "{{ user_path }}/{{ item }}"
+    dest: "/usr/bin/{{ item }}"
+    mode: '755'
+    remote_src: yes
+  loop:
+    - openshift-install
+    - oc
+  #when: ocp4_files.changed
 
 # Create mirror environment variables
 ## https://red.ht/3aFwls6
@@ -31,7 +31,7 @@
 
 - name: Create env file for use it in the future or for checking purposes
   copy:
-    dest: "/home/{{ azure_vm_admin_username }}/mirror.env"
+    dest: "/root/mirror.env"
     content: |
         OCP_RELEASE="{{ ocp_img }}-x86_64"
         LOCAL_REGISTRY="{{ registry_url }}"
