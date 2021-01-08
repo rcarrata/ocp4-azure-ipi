@@ -1,8 +1,8 @@
 # Openshift parameters
 cloud: "azure"
 mode: "private"
-ocp4_version: '4.5.24'
-#ocp4_version: '4.6.9'
+#ocp4_version: '4.5.24'
+ocp4_version: '4.6.9'
 ocp_img: "{{ ocp4_version }}"
 cluster_name: 'ocp4'
 ocp_base_domain_name: "{{ azure_dns_zone }}"
@@ -11,9 +11,8 @@ local_kubeconfig: '~/.kube/{{ cluster_name }}'
 user_path: "/root/{{ cluster_name }}"
 
 # Azure parameters
-azure_dns_root: lab.local
-azure_resource_group: ocp4-test
-#azure_resource_group: ocp4-rg
+azure_dns_root: asimov.lab
+azure_resource_group: ocp4-rg
 azure_location: eastus
 azure_vnet_name: ocp4-vnet
 azure_dns_zone: "az.{{ azure_dns_root }}"
@@ -23,6 +22,11 @@ azure_subnet_compute: 10.10.10.0/24
 azure_subnet_bastion: 10.10.99.0/24
 master_instance_count: 3
 worker_instance_count: 3
+
+## The outbound routing strategy used to connect your cluster to the internet.
+## https://docs.openshift.com/container-platform/4.6/installing/installing_azure/installing-azure-private.html#installation-azure-user-defined-routing_installing-azure-private
+#azure_outboundtype: "Loadbalancer"
+azure_outboundtype: "UserDefinedRouting"
 
 # Azure vm parameters
 azure_vm_name: bastion

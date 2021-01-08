@@ -30,11 +30,11 @@
     AZURE_CLIENT_ID: "{{ azure_client_id }}"
     AZURE_SECRET: "{{ azure_secret }}"
   tasks:
-    - name: Install SW and Configure Registry into the Bastion
-      include_role:
-        name: ocp4-azure-ipi
-      vars:
-        action: prepare-bastion
+    #- name: Install SW and Configure Registry into the Bastion
+    #  include_role:
+    #    name: ocp4-azure-ipi
+    #  vars:
+    #    action: prepare-bastion
 
     - name: Install cluster
       include_role:

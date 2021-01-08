@@ -43,6 +43,7 @@ platform:
     virtualNetwork: {{ azure_vnet_name }}
     controlPlaneSubnet: control-plane
     computeSubnet: compute
+    outboundType: {{ azure_outboundtype }}
 publish: Internal
 proxy:
   httpProxy: http://{{ registry_cn }}:3128
