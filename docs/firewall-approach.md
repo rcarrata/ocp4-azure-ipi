@@ -130,7 +130,7 @@ fw_ip="$(az network public-ip show -n fw-pip -g ocp4-rg | jq -r .ipAddress)"
 ```
 
 ```
-az network firewall nat-rule create --collection-name exampleset \
+az network firewall nat-rule create --collection-name access2bastion \
 --destination-addresses $fw_pip --destination-ports 22 \
 --firewall-name myFirewall --name inboundrule --protocols Any \
 --resource-group ocp4-rg --source-addresses '*' \
