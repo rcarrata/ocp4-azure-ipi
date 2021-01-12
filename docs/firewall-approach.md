@@ -35,6 +35,14 @@ az extension add -n azure-firewall
 az network firewall create -g ${RG} -n ${FW} --location eastus
 ```
 
+NOTE: To leverage FQDN on network rules we need DNS proxy enabled, when enabled the firewall will listen on port 53 and will forward DNS requests to the DNS server specified above. This will allow the firewall to translate that FQDN automatically.
+
+Testing the dns --enable-dns-proxy true
+
+```
+az network firewall create -g ${RG} -n ${FW} --location eastus --enable-dns-proxy true
+```
+
 ## create static IP
 
 ```
@@ -52,6 +60,22 @@ az network firewall ip-config create \
     --public-ip-address fw-pip \
     --resource-group ${RG} \
     --vnet-name fw-vnet
+...
+{
+  "id": "/subscriptions/xxxx/resourceGroups/ocp4-rg/providers/Microsoft.Network/azureFirewalls/myFirewall/azureFirewallIpConfigurations/FW-config",
+  "name": "FW-config",
+  "privateIpAddress": "10.1.1.4",
+  "provisioningState": "Succeeded",
+  "publicIpAddress": {
+    "id": "/subscriptions/xxxx/resourceGroups/ocp4-rg/providers/Microsoft.Network/publicIPAddresses/fw-pip",
+    "resourceGroup": "ocp4-rg"
+  },
+  "resourceGroup": "ocp4-rg",
+  "subnet": {
+    "id": "/subscriptions/xxx/resourceGroups/ocp4-rg/providers/Microsoft.Network/virtualNetworks/fw-vnet/subnets/AzureFirewallSubnet",
+    "resourceGroup": "ocp4-rg"
+  },
+  "type": "Microsoft.Network/azureFirewalls/azureFirewallIpConfigurations"
 ```
 
 ## Update config
@@ -78,6 +102,11 @@ az network route-table create \
 ```
 
 ## Create default route
+
+Azure automatically routes traffic between Azure subnets, virtual networks, and on-premises networks. If you want to change any of Azure's default routing, you do so by creating a route table.
+
+Create an empty route table to be associated with a given subnet. The route table will define the next hop as the Azure Firewall created above. Each subnet can have zero or one route table associated to it.
+
 ```
 az network route-table route create \
   --resource-group ${RG} \
@@ -86,6 +115,26 @@ az network route-table route create \
   --address-prefix 0.0.0.0/0 \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $fwprivaddr
+```
+
+## Nat Rule
+
+Put before the assignation of the route table to the bastion subnet for avoiding locking down
+
+```
+bastion_private_ip="$(az network nic show -n bastion01 -g ocp4-rg | jq -r .ipConfigurations[0].privateIpAddress)"
+```
+
+```
+fw_ip="$(az network public-ip show -n fw-pip -g ocp4-rg | jq -r .ipAddress)"
+```
+
+```
+az network firewall nat-rule create --collection-name exampleset \
+--destination-addresses $fw_pip --destination-ports 22 \
+--firewall-name myFirewall --name inboundrule --protocols Any \
+--resource-group ocp4-rg --source-addresses '*' \
+--translated-port 22 --action Dnat --priority 100 --translated-address $bastion_private_ip
 ```
 
 ## Associate the route table to the cluster subnets
@@ -105,11 +154,7 @@ az network vnet subnet update \
 done
 ```
 
-## Nat Rule
-```
-az network firewall nat-rule create --collection-name exampleset --destination-addresses 20.72.148.63 --destination-ports 22 --firewall-name myFirewall --name inboundrule --protocols Any --resource-group ocp4-rg --source-addresses '*' --translated-port 22 --action Dnat --priority 100 --translated-address 10.10.99.4
-```
-
+NOTE: the bastion subnet needs the route to the azure firewall? Could be without routing through the azure firewall and only with by the regular routing. Check to leave the the bastion subnet outside the route table. If this so, the nat rule for that is not needed any more.
 
 # Configure APP rules
 

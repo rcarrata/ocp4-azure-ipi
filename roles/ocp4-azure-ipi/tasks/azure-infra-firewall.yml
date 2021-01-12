@@ -1,0 +1,150 @@
+---
+
+# Based in: https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic#restrict-egress-traffic-using-azure-firewall
+
+- name: Create virtual network for the Firewall
+  azure_rm_virtualnetwork:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_vnet_fw_name }}"
+    address_prefixes: "{{ azure_vnet_fw_cidr }}"
+
+- name: Add subnet network for the firewall
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_subnet_fw_name }}"
+    address_prefix: "{{ azure_subnet_controlplane }}"
+    virtual_network: "{{ azure_vnet_name }}"
+
+# az network vnet peering create -g ${RG} -n fw2cluster --vnet-name fw-vnet --remote-vnet ${VNET} --allow-vnet-access
+- name: Create virtual network peering fw-net to ocp4 cluster-net
+  azure_rm_virtualnetworkpeering:
+    resource_group: "{{ azure_resource_group }}"
+    virtual_network: "{{ azure_vnet_fw_name }}"
+    name: fw2cluster
+    remote_virtual_network:
+      resource_group: "{{ azure_vnet_fw_name }}"
+      name: "{{ azure_vnet_name }}"
+    allow_virtual_network_access: true
+    allow_forwarded_traffic: false
+
+- name: Create virtual network peering from ocp4 cluster-net to fw-net
+  azure_rm_virtualnetworkpeering:
+    resource_group: "{{ azure_resource_group }}"
+    virtual_network: "{{ azure_vnet_name }}"
+    name: cluster2fw
+    remote_virtual_network:
+      resource_group: "{{ azure_vnet_fw_name }}"
+      name: "{{ azure_vnet_fw_name }}"
+    allow_virtual_network_access: true
+    allow_forwarded_traffic: true
+
+#export FW="myFirewall"
+#az extension add -n azure-firewall
+#az network firewall create -g ${RG} -n ${FW} --location eastus
+
+- name: Add the firewall extension
+  shell: az extension add -n azure-firewall
+
+# TODO: check the sku standard that could be deprecated in the future
+- name: Create a public ip address for fw
+  azure_rm_publicipaddress:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_fw_pip_name }}"
+    allocation_method: static
+    sku: standard
+  register: fw_pip
+
+- name: Obtain the pip ip
+  msg: "{{ fw_pip }}"
+
+# https://docs.microsoft.com/en-us/rest/api/firewall/azurefirewalls/createorupdate
+- name: Create Azure Firewall
+  azure_rm_azurefirewall:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_fw_name }}"
+    #ip_configurations:
+    #  - subnet: >-
+    #      /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup
+    #      /providers/Microsoft.Network/virtualNetworks/myVirtualNetwork
+    #      /subnets/AzureFirewallSubnet
+    #    public_ip_address: >-
+    #      /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup
+    #      /providers/Microsoft.Network/publicIPAddresses/
+    #      myPublicIpAddress
+    #    name: azureFirewallIpConfiguration
+  register: fw_az_ocp4
+
+- name: Obtain the private IP of the FW
+  msg: "{{ fw_az_ocp4 }}"
+
+- name: Set fact the private Ip of the FW
+  set_fact:
+    private_fw_ip: "{{ fw_az_ocp4 }}"
+
+- name: Create a route table for the FW
+  azure_rm_routetable:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_fw_rt }}"
+    disable_bgp_route_propagation: true
+
+- name: Create a route
+  azure_rm_route:
+    resource_group: "{{ azure_resource_group }}"
+    name: DG-Route
+    address_prefix: 0.0.0.0/0
+    next_hop_type: virtual_appliance
+    route_table_name: "{{ azure_fw_rt }}"
+    next_hop_ip_address: "{{ private_fw_ip }}"
+
+- name: Update the route subnet for control-plane
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: control-plane
+    address_prefix: "{{ azure_subnet_controlplane }}"
+    virtual_network: "{{ azure_vnet_name }}"
+  route: "{{ azure_fw_rt }}"
+
+- name: Add subnet for compute
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: compute
+    address_prefix: "{{ azure_subnet_compute }}"
+    virtual_network: "{{ azure_vnet_name }}"
+  route: "{{ azure_fw_rt }}"
+
+
+- name: Add subnet for bastion
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: bastion
+    address_prefix: "{{ azure_subnet_bastion }}"
+    virtual_network: "{{ azure_vnet_name }}"
+  route: "{{ azure_fw_rt }}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
