@@ -52,42 +52,6 @@
     RELEASE_NAME="ocp-release"
     CLUSTER_NAME="{{ cluster_name }}"
 
-#- name: Add env vars to .bashrc
-#  lineinfile:
-#    path: "${HOME}/.bashrc"
-#    regexp: "^export {{ item.entry }}"
-#    line: "export {{ item.entry }}={{ item.val }}"
-#  loop:
-#    - entry: "LOCAL_REGISTRY"
-#      val: "{{ registry_url }}"
-#    - entry: "LOCAL_REPOSITORY"
-#      val: "openshift-release-dev"
-#    - entry: "LOCAL_SECRET_JSON"
-#      val: "{{ registry_custom_pull_secret_path }}"
-#    - entry: "PRODUCT_REPO"
-#      val: "openshift-release-dev"
-#    - entry: "RELEASE_NAME"
-#      val: "ocp-release"
-#    - entry: "OCP_RELEASE"
-#      val: "{{ ocp_img }}"
-#    - entry: "CLUSTER_NAME"
-#      val: "{{ cluster_name }}"
-#    - entry: "OC_PATH"
-#      val: "{{ user_path }}"
-
-
-#- shell: >-
-#    'echo ${OCP_RELEASE}
-#    echo ${OCP_RELEASE}
-#    echo ${LOCAL_REGISTRY}
-#    echo ${LOCAL_REPOSITORY}
-#    echo ${PRODUCT_REPO}
-#    echo ${LOCAL_SECRET_JSON}
-#    echo ${RELEASE_NAME}
-#    echo ${CLUSTER_NAME}'
-
-- shell: whoami
-
 - name: Mirror OpenShift content to local registry
   shell: "oc adm release mirror -a {{ LOCAL_SECRET_JSON }} --from=quay.io/{{ PRODUCT_REPO }}/{{ RELEASE_NAME }}:{{ OCP_RELEASE }} --to={{ LOCAL_REGISTRY }}/{{ LOCAL_REPOSITORY }} --to-release-image={{ LOCAL_REGISTRY }}/{{ LOCAL_REPOSITORY }}:{{ OCP_RELEASE }}"
 
