@@ -12,4 +12,4 @@
     AZURE_CLIENT_ID: "{{ azure_client_id }}"
     AZURE_SECRET: "{{ azure_secret }}"
   roles:
-    - ocp4-azure-ipi
+    - ocp4-cloud-ipi

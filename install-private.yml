@@ -1,6 +1,6 @@
 ---
 
-- name: "[AZURE-PRIVATE] Create Azure Openshift Cluster in Private Mode"
+- name: "[OCP4-PRIVATE] Create Azure Openshift Cluster in Private Mode"
   hosts: localhost
   gather_facts: yes
   vars_files:
@@ -14,11 +14,11 @@
   tasks:
     - name: Provision Azure Infra and Deploy Bastion
       include_role:
-        name: ocp4-azure-ipi
+        name: ocp4-cloud-ipi
       vars:
         action: provision-infra
 
-- name: "[AZURE-PRIVATE] Create Azure Openshift Cluster"
+- name: "[OCP4-PRIVATE] Create Azure Openshift Cluster"
   hosts: inv
   become: true
   vars_files:
@@ -32,12 +32,12 @@
   tasks:
     - name: Install SW and Configure Registry into the Bastion
       include_role:
-        name: ocp4-azure-ipi
+        name: ocp4-cloud-ipi
       vars:
         action: prepare-bastion
 
     - name: Install cluster
       include_role:
-        name: ocp4-azure-ipi
+        name: ocp4-cloud-ipi
       vars:
         action: install

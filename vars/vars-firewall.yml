@@ -1,4 +1,4 @@
-# Azure firewall parameters
+# Azure firewall vars
 
 azure_vnet_fw_name: fw-vnet
 azure_vnet_fw_cidr: 10.1.0.0/16
