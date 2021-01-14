@@ -47,7 +47,7 @@
     - vars/vars-private.yml
   tasks:
     - name: Delete the Openshift Cluster
-      include_tasks: roles/ocp4-azure-ipi/tasks/uninstall.yml
+      include_tasks: roles/ocp4-cloud-ipi/tasks/uninstall.yml
 
 - name: "[AZURE-PRIVATE] Destroy Azure Openshift Cluster in Private Mode"
   hosts: localhost
@@ -57,5 +57,5 @@
     - vars/vars-private.yml
   tasks:
     - name: Destroy Resource Group of Openshift
-      include_tasks: roles/ocp4-azure-ipi/tasks/azure-infra-destroy.yml
+      include_tasks: roles/ocp4-cloud-ipi/tasks/azure-infra-destroy.yml
 

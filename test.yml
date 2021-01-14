@@ -1,0 +1,11 @@
+- name: "[AZURE-PRIVATE] Add Azure Firewall in Private Mode"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+    - vars/vars-firewall.yml
+  tasks:
+
+    - name: Test
+      shell: "az network firewall application-rule create --collection-name App-Coll01 --firewall-name {{ azure_fw_name }} --name Allow-Google --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *google.com --source-addresses {{ azure_subnet_compute }} --priority 200 --action Allow"

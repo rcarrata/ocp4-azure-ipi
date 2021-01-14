@@ -1,6 +1,6 @@
 ---
 
-- name: "[OCP4-PRIVATE] Create Azure Openshift Cluster in Private Mode"
+- name: "[OCP4-INSTALL] Create Azure Openshift Cluster in Private/Disconnected Mode"
   hosts: localhost
   gather_facts: yes
   vars_files:
@@ -18,7 +18,7 @@
       vars:
         action: provision-infra
 
-- name: "[OCP4-PRIVATE] Create Azure Openshift Cluster"
+- name: "[OCP4-INSTALL] Create Azure Openshift Cluster in Private/Disconnected mode"
   hosts: inv
   become: true
   vars_files:

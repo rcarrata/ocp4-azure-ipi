@@ -2,6 +2,7 @@
 
 # Based in: https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic#restrict-egress-traffic-using-azure-firewall
 
+## Add the Vnets and Subnets for Firewalls
 - name: Create virtual network for the Firewall
   azure_rm_virtualnetwork:
     resource_group: "{{ azure_resource_group }}"
@@ -12,17 +13,17 @@
   azure_rm_subnet:
     resource_group: "{{ azure_resource_group }}"
     name: "{{ azure_subnet_fw_name }}"
-    address_prefix: "{{ azure_subnet_controlplane }}"
-    virtual_network: "{{ azure_vnet_name }}"
+    address_prefix: "{{ azure_subnet_fw_cidr }}"
+    virtual_network: "{{ azure_vnet_fw_name }}"
 
-# az network vnet peering create -g ${RG} -n fw2cluster --vnet-name fw-vnet --remote-vnet ${VNET} --allow-vnet-access
+## Add Peers for the vNets
 - name: Create virtual network peering fw-net to ocp4 cluster-net
   azure_rm_virtualnetworkpeering:
     resource_group: "{{ azure_resource_group }}"
     virtual_network: "{{ azure_vnet_fw_name }}"
     name: fw2cluster
     remote_virtual_network:
-      resource_group: "{{ azure_vnet_fw_name }}"
+      resource_group: "{{ azure_resource_group }}"
       name: "{{ azure_vnet_name }}"
     allow_virtual_network_access: true
     allow_forwarded_traffic: false
@@ -33,18 +34,15 @@
     virtual_network: "{{ azure_vnet_name }}"
     name: cluster2fw
     remote_virtual_network:
-      resource_group: "{{ azure_vnet_fw_name }}"
+      resource_group: "{{ azure_resource_group }}"
       name: "{{ azure_vnet_fw_name }}"
     allow_virtual_network_access: true
     allow_forwarded_traffic: true
 
-#export FW="myFirewall"
-#az extension add -n azure-firewall
-#az network firewall create -g ${RG} -n ${FW} --location eastus
-
 - name: Add the firewall extension
   shell: az extension add -n azure-firewall
 
+## Create PIP for FW
 # TODO: check the sku standard that could be deprecated in the future
 - name: Create a public ip address for fw
   azure_rm_publicipaddress:
@@ -55,32 +53,39 @@
   register: fw_pip
 
 - name: Obtain the pip ip
-  msg: "{{ fw_pip }}"
+  debug:
+    msg: "{{ fw_pip.state.ip_address }}"
 
+- name: Set Fact the pip ip
+  set_fact:
+    fw_pip: "{{ fw_pip.state.ip_address }}"
+
+## Create Firewall
 # https://docs.microsoft.com/en-us/rest/api/firewall/azurefirewalls/createorupdate
-- name: Create Azure Firewall
+- name: Create Azure Firewall and associate the fw PIP
   azure_rm_azurefirewall:
     resource_group: "{{ azure_resource_group }}"
     name: "{{ azure_fw_name }}"
-    #ip_configurations:
-    #  - subnet: >-
-    #      /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup
-    #      /providers/Microsoft.Network/virtualNetworks/myVirtualNetwork
-    #      /subnets/AzureFirewallSubnet
-    #    public_ip_address: >-
-    #      /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup
-    #      /providers/Microsoft.Network/publicIPAddresses/
-    #      myPublicIpAddress
-    #    name: azureFirewallIpConfiguration
+    ip_configurations:
+      - subnet: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.Network/virtualNetworks/{{ azure_vnet_fw_name }}/subnets/{{ azure_subnet_fw_name }}"
+        public_ip_address: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.Network/publicIPAddresses/{{ azure_fw_pip_name }}"
+        name: azureFirewallIpConfiguration
+
+- name: Get Azure Firewall
+  azure_rm_azurefirewall_info:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_fw_name }}"
   register: fw_az_ocp4
 
 - name: Obtain the private IP of the FW
-  msg: "{{ fw_az_ocp4 }}"
+  debug:
+    msg: "{{ fw_az_ocp4.firewalls.ip_configurations.0.properties.privateIPAddress }}"
 
 - name: Set fact the private Ip of the FW
   set_fact:
-    private_fw_ip: "{{ fw_az_ocp4 }}"
+    private_fw_ip: "{{ fw_az_ocp4.firewalls.ip_configurations.0.properties.privateIPAddress }}"
 
+## Create the route table and associate
 - name: Create a route table for the FW
   azure_rm_routetable:
     resource_group: "{{ azure_resource_group }}"
@@ -96,13 +101,14 @@
     route_table_name: "{{ azure_fw_rt }}"
     next_hop_ip_address: "{{ private_fw_ip }}"
 
+## Associate the route table to the cluster subnets
 - name: Update the route subnet for control-plane
   azure_rm_subnet:
     resource_group: "{{ azure_resource_group }}"
     name: control-plane
     address_prefix: "{{ azure_subnet_controlplane }}"
     virtual_network: "{{ azure_vnet_name }}"
-  route: "{{ azure_fw_rt }}"
+    route_table: "{{ azure_fw_rt }}"
 
 - name: Add subnet for compute
   azure_rm_subnet:
@@ -110,41 +116,56 @@
     name: compute
     address_prefix: "{{ azure_subnet_compute }}"
     virtual_network: "{{ azure_vnet_name }}"
-  route: "{{ azure_fw_rt }}"
+    route_table: "{{ azure_fw_rt }}"
 
+# Not add the bastion for avoiding to lock in.
+# TODO: Check the strategy, if there is valuable to go through the firewall
+#- name: Add subnet for bastion
+#  azure_rm_subnet:
+#    resource_group: "{{ azure_resource_group }}"
+#    name: bastion
+#    address_prefix: "{{ azure_subnet_bastion }}"
+#    virtual_network: "{{ azure_vnet_name }}"
+#    route: "{{ azure_fw_rt }}"
 
-- name: Add subnet for bastion
-  azure_rm_subnet:
-    resource_group: "{{ azure_resource_group }}"
-    name: bastion
-    address_prefix: "{{ azure_subnet_bastion }}"
-    virtual_network: "{{ azure_vnet_name }}"
-  route: "{{ azure_fw_rt }}"
+## Create the App rules for allow egress
+#- name: Create Azure Firewall App Rule for RedHat resources
+#  azure_rm_azurefirewall:
+#    resource_group: "{{ azure_resource_group }}"
+#    name: "{{ azure_fw_name }}"
+#    application_rule_collections:
+#      - priority: 400
+#        action:
+#          type: allow
+#        rules:
+#          - name: redhat
+#            description: Allow Red Hat and Openshift stuff
+#            source_addresses:
+#              - 10.10.10.0/24
+#            protocols:
+#              - type: https
+#                port: '443'
+#            target_fqdns:
+#              - www.redhat.com
+#        name: redhatrule
 
+## Due to the issue https://github.com/ansible-collections/azure/issues/395 the app rule needs to be added with shell command.
+- name: Create Azure Firewall App Rule for Google resources
+  shell: "az network firewall application-rule create --collection-name App-Google-Rules --firewall-name {{ azure_fw_name }} --name Allow-Google --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *google.com --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 100 --action Allow"
+  ignore_errors: yes
 
+- name: Create Azure Firewall App Rule for Microsoft resources
+  shell: "az network firewall application-rule create --collection-name App-Microsoft-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *azure.com *microsoft.com *microsoftonline.com *windows.net --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 200 --action Allow"
+  ignore_errors: yes
 
+- name: Create Azure Firewall App Rule for Red Hat resources
+  shell: "az network firewall application-rule create --collection-name App-Redhat-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *redhat.com *redhat.io *quay.io *openshift.com  --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 300 --action Allow"
+  ignore_errors: yes
 
+- name: Create Azure Firewall App Rule for Github resources
+  shell: "az network firewall application-rule create --collection-name App-Github-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *github.com  --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 400 --action Allow"
+  ignore_errors: yes
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- name: Create Azure Firewall App Rule for Docker resources
+  shell: "az network firewall application-rule create --collection-name App-Docker-Rules --firewall-name {{ azure_fw_name }} --name Allow-Docker --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *docker.io *docker.com --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 500 --action Allow"
+  ignore_errors: yes
