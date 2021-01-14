@@ -20,11 +20,14 @@
      - python3-passlib
      - python3-bcrypt
 
+# The squid is only needed in private installations for acting as a proxy
 - name: Enable and start squid
   systemd:
     name: squid
     enabled: yes
     state: started
+  when:
+    - mode == "private"
 
 - name: Create directory for registry contents
   file:

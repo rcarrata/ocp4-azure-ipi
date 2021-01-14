@@ -18,7 +18,17 @@ When using an outbound type of UDR, a load balancer public IP address for inboun
 ansible-playbook add-azure-fw.yml  --vault-password-file .vault-file-password
 ```
 
-## Create Firewall With AZ Cli (manual :D)
+IMPORTANT: If the proxy is used in the installation (private), then needs to be removed from the, because this will be used in all the pods within the pods:
+
+```
+oc get proxy cluster -o yaml
+```
+
+## 3. Checking the Azure Firewall
+
+[Check Firewall](/docs/check_firewall)
+
+## 4. Create Firewall With AZ Cli (manual :D)
 
 ```
 VNET=$(az network vnet list --query "[?contains(name, '${CLUSTER_NAME}')].{Name:name}" -o tsv)
