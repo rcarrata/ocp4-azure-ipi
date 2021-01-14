@@ -14,17 +14,17 @@ controlPlane:
     azure:
       osDisk:
         diskSizeGB: 120
-      type: Standard_D4s_v3
-  replicas: 3
+      type: {{ master_instance_type }}
+  replicas: {{ master_instance_count }}
 compute:
 - hyperthreading: Enabled
   name: worker
   platform:
     azure:
-      type: Standard_D4s_v3
       osDisk:
         diskSizeGB: 120
-  replicas: 2
+      type: {{ worker_instance_type }}
+  replicas: {{ worker_instance_count }}
 metadata:
   name: {{ cluster_name }}
 networking:
@@ -45,10 +45,12 @@ platform:
     computeSubnet: compute
     outboundType: {{ azure_outboundtype }}
 publish: Internal
+{% if mode == 'private' %}
 proxy:
   httpProxy: http://{{ registry_cn }}:3128
   httpsProxy: http://{{ registry_cn }}:3128
   noProxy: .{{ azure_dns_root }}
+{% endif %}
 fips: false
 sshKey: {{ azure_vm_admin_pub_key }}
 pullSecret: |
