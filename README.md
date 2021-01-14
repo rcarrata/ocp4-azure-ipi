@@ -2,33 +2,20 @@
 
 Ansible Repository for deploy Openshift 4 clusters with IPI installation in connected, private and disconnected mode
 
-There is different approaches for each mode, but always an IPI installation is used.
+There are different approaches for each mode, but always an IPI installation is used.
 
 ## Prereqs
 
+[Prerequisites Doc](/docs/prereqs.md)
+
 ## Installation Modes
 
-### Connected Installation
+* [Connected Installation](/docs/connected.md)
+* [Private Installation](/docs/privated.md)
+* [Disconnected Installation](/docs/disconnected.md)
 
-```
-ansible-playbook install.yml --vault-password-file .vault-file-password
-```
+## Egress modes
 
-### Private Installation
-
-```
-ansible-playbook install-private.yml --vault-password-file .vault-file-password
-```
-
-### Disconnected Installation
-
-```
-ansible-playbook install-private.yml --vault-password-file .vault-file-password
-```
-
-
-## Quick Install
-
-
-
-
+* [Default with LoadBalancer](/docs/egress-default.md)
+* [Azure Firewall](/docs/egress-firewall.md)
+* [Nat Gateway](/docs/egress-nat.md)

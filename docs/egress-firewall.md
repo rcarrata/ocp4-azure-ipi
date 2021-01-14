@@ -1,10 +1,24 @@
-## Outbound Type - User Defined Routing - Azure Firewall
+# Egress Mode - Azure Firewall
+
+## 1. Outbound Type - User Defined Routing - Azure Firewall
 
 The simplest solution to securing outbound addresses lies in use of a firewall device that can control outbound traffic based on domain names. Azure Firewall, for example, can restrict outbound HTTP and HTTPS traffic based on the FQDN of the destination. You can also configure your preferred firewall and security rules to allow these required ports and addresses.
 
 IMPORTANT: Outbound type of UDR requires there is a route for 0.0.0.0/0 and next hop destination of NVA (Network Virtual Appliance) in the route table. The route table already has a default 0.0.0.0/0 to Internet, without a Public IP to SNAT just adding this route will not provide you egress.
 
 When using an outbound type of UDR, a load balancer public IP address for inbound requests is not created unless a service of type loadbalancer is configured. A public IP address for outbound requests is never created by AKS if an outbound type of UDR is set.
+
+## 2. Install and Configure Azure Firewall with Ansible (recommended)
+
+### 2.1 Prereqs
+
+### 2.2 Execute playbook for install and creation
+
+```
+ansible-playbook add-azure-fw.yml  --vault-password-file .vault-file-password
+```
+
+## Create Firewall With AZ Cli (manual :D)
 
 ```
 VNET=$(az network vnet list --query "[?contains(name, '${CLUSTER_NAME}')].{Name:name}" -o tsv)
@@ -156,14 +170,14 @@ done
 
 NOTE: the bastion subnet needs the route to the azure firewall? Could be without routing through the azure firewall and only with by the regular routing. Check to leave the the bastion subnet outside the route table. If this so, the nat rule for that is not needed any more.
 
-# Configure APP rules
+## Configure APP rules
 
-# Get subnet prefixes
+### Get subnet prefixes
 ```
 addressPrefix=`az network vnet subnet list --vnet-name ${VNET} -g ${RG} -o tsv --query '[].{AddressPrefix:addressPrefix}'`
 ```
 
-# Example of *.google.com
+### Allow google
 ```
 az network firewall application-rule create \
    --collection-name App-Coll01 \
@@ -177,7 +191,7 @@ az network firewall application-rule create \
    --action Allow
 ```
 
-# Allow azure / microsoft / windows stuff
+### Allow azure / microsoft / windows stuff
 ```
 az network firewall application-rule create \
    --collection-name azure_ms \
@@ -191,7 +205,7 @@ az network firewall application-rule create \
    --action Allow
 ```
 
-# Allow redhat / openshift / quay stuff
+### Allow redhat / openshift / quay stuff
 ```
 az network firewall application-rule create \
    --collection-name redhat \
@@ -205,7 +219,7 @@ az network firewall application-rule create \
    --action Allow
 ```
 
-# Allow github
+### Allow github
 ```
 az network firewall application-rule create \
    --collection-name github \
@@ -219,7 +233,7 @@ az network firewall application-rule create \
    --action Allow
 ```
 
-# Allow docker.io
+### Allow docker.io
 ```
 az network firewall application-rule create \
    --collection-name docker \
