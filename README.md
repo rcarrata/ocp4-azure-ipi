@@ -10,9 +10,9 @@ There are different approaches for each mode, but always an IPI installation is 
 
 ## Installation Modes
 
-* [Connected Installation](/docs/connected.md)
-* [Private Installation](/docs/privated.md)
-* [Disconnected Installation](/docs/disconnected.md)
+* [Connected Installation](/docs/mode-connected.md)
+* [Private Installation](/docs/mode-privated.md)
+* [Disconnected Installation](/docs/mode-disconnected.md)
 
 ## Egress modes
 
