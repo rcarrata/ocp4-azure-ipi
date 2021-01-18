@@ -6,7 +6,7 @@ There are different approaches for each mode, but always an IPI installation is 
 
 ## Prereqs
 
-[Prerequisites Doc](/docs/prereqs.md)
+* [Prerequisites Doc](/docs/prereqs.md)
 
 ## Installation Modes
 
