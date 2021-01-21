@@ -27,7 +27,7 @@
 - name: '[INSTALL_CONFIG] Copy the Kubeconfig to the know location'
   copy:
     src: "{{ user_path }}/auth/kubeconfig"
-    dest: "{{ local_kubeconfig }}"
+    dest: "~/.kube/config"
     remote_src: yes
   when:
     - local_kubeconfig is defined
