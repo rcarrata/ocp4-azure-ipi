@@ -32,3 +32,17 @@
   loop_control:
     loop_var: pkg
   when: ocp4_files.changed
+
+# This is for avoid to have to mess with the PATHs
+- name: Copy the Openshift Installer and CLI in a well-known path
+  copy:
+    src: "{{ user_path }}/{{ item }}"
+    dest: "/usr/bin/{{ item }}"
+    mode: '755'
+    remote_src: yes
+  loop:
+    - openshift-install
+    - oc
+  when:
+    - mode != "public"
+

@@ -39,42 +39,45 @@
     - certs
     - data
 
-## Certificates
-- name: Generate an OpenSSL private key.
-  openssl_privatekey:
-    path: "{{ registry_path }}/registry.key"
+- block:
+    ## Certificates
+    - name: Generate an OpenSSL private key.
+      openssl_privatekey:
+        path: "{{ registry_path }}/registry.key"
 
-- name: Generate an OpenSSL CSR.
-  openssl_csr:
-    path: "{{ registry_path }}/registry.csr"
-    privatekey_path: "{{ registry_path }}/registry.key"
-    common_name: "{{ registry_cn }}"
-    basic_constraints: "CA:TRUE"
+    - name: Generate an OpenSSL CSR.
+      openssl_csr:
+        path: "{{ registry_path }}/registry.csr"
+        privatekey_path: "{{ registry_path }}/registry.key"
+        common_name: "{{ registry_cn }}"
+        basic_constraints: "CA:TRUE"
 
-- name: Generate a Self Signed OpenSSL certificate.
-  openssl_certificate:
-    path: "{{ registry_path }}/registry.crt"
-    privatekey_path: "{{ registry_path }}/registry.key"
-    csr_path: "{{ registry_path }}/registry.csr"
-    provider: selfsigned
+    - name: Generate a Self Signed OpenSSL certificate.
+      openssl_certificate:
+        path: "{{ registry_path }}/registry.crt"
+        privatekey_path: "{{ registry_path }}/registry.key"
+        csr_path: "{{ registry_path }}/registry.csr"
+        provider: selfsigned
 
-- name: Check cert in anchors
-  stat:
-    path: /etc/pki/ca-trust/source/anchors/registry.crt
-  register: stat_result
+    - name: Check cert in anchors
+      stat:
+        path: /etc/pki/ca-trust/source/anchors/registry.crt
+      register: stat_result
 
-- name: Copy cert
-  command: "cp {{ registry_path }}/registry.crt /etc/pki/ca-trust/source/anchors/registry.crt"
-  when: stat_result.stat.exists == False
+    - name: Copy cert
+      command: "cp {{ registry_path }}/registry.crt /etc/pki/ca-trust/source/anchors/registry.crt"
+      when: stat_result.stat.exists == False
 
-- name: Update CA
-  command: update-ca-trust
-  when: stat_result.stat.exists == False
+    - name: Update CA
+      command: update-ca-trust
+      when: stat_result.stat.exists == False
 
-## Htpasswd Users for the Registry
-- name: Create htpasswd file
-  htpasswd:
-    path: /opt/registry/auth/htpasswd
-    crypt_scheme: bcrypt
-    name: "{{ registry_user }}"
-    password: "{{ registry_password }}"
+    ## Htpasswd Users for the Registry
+    - name: Create htpasswd file
+      htpasswd:
+        path: /opt/registry/auth/htpasswd
+        crypt_scheme: bcrypt
+        name: "{{ registry_user }}"
+        password: "{{ registry_password }}"
+  when:
+    - mode == "disconnected"

@@ -1,5 +1,6 @@
 apiVersion: v1
 baseDomain: {{ ocp_base_domain_name }}
+{% if mode == 'disconnected' %}
 imageContentSources:
 - mirrors:
   - {{ registry_url }}/openshift-release-dev
@@ -7,6 +8,7 @@ imageContentSources:
 - mirrors:
   - {{ registry_url }}/openshift-release-dev
   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+{% endif %}
 controlPlane:
   hyperthreading: Enabled
   name: master
@@ -53,7 +55,11 @@ proxy:
 {% endif %}
 fips: false
 sshKey: {{ azure_vm_admin_pub_key }}
+{% if mode == 'private' %}
+pullSecret: '{{ ocp4_pull_secret |  replace("'",'"') }}'
+{% elif mode == 'disconnected' %}
 pullSecret: |
 {{ registry_private_pull_secret | indent(2, True) }}
 additionalTrustBundle: |
 {{ registry_ca | indent(2, True) }}
+{% endif %}
