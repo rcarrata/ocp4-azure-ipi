@@ -72,27 +72,27 @@
   until: result_link is not failed
 
 ## Add Peers for the vNets
-- name: Create virtual network peering acm-net to ocp4 cluster-net
-  azure_rm_virtualnetworkpeering:
-    resource_group: "{{ azure_resource_group }}"
-    virtual_network: "{{ azure_vnet_acm_name }}"
-    name: acm2cluster
-    remote_virtual_network:
-      resource_group: "{{ azure_resource_group }}"
-      name: "{{ azure_vnet_name }}"
-    allow_virtual_network_access: true
-    allow_forwarded_traffic: true
-
-- name: Create virtual network peering from ocp4 cluster-net to acm-net
-  azure_rm_virtualnetworkpeering:
-    resource_group: "{{ azure_resource_group }}"
-    virtual_network: "{{ azure_vnet_name }}"
-    name: cluster2acm
-    remote_virtual_network:
-      resource_group: "{{ azure_resource_group }}"
-      name: "{{ azure_vnet_acm_name }}"
-    allow_virtual_network_access: true
-    allow_forwarded_traffic: true
+#- name: Create virtual network peering acm-net to ocp4 cluster-net
+#  azure_rm_virtualnetworkpeering:
+#    resource_group: "{{ azure_resource_group }}"
+#    virtual_network: "{{ azure_vnet_acm_name }}"
+#    name: acm2cluster
+#    remote_virtual_network:
+#      resource_group: "{{ azure_resource_group }}"
+#      name: "{{ azure_vnet_name }}"
+#    allow_virtual_network_access: true
+#    allow_forwarded_traffic: true
+#
+#- name: Create virtual network peering from ocp4 cluster-net to acm-net
+#  azure_rm_virtualnetworkpeering:
+#    resource_group: "{{ azure_resource_group }}"
+#    virtual_network: "{{ azure_vnet_name }}"
+#    name: cluster2acm
+#    remote_virtual_network:
+#      resource_group: "{{ azure_resource_group }}"
+#      name: "{{ azure_vnet_acm_name }}"
+#    allow_virtual_network_access: true
+#    allow_forwarded_traffic: true
 
 ## Add VM in the ACM Net for debugging
 - name: Create Network Security Group that allows SSH
