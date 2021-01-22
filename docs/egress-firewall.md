@@ -1,6 +1,6 @@
 # Egress Mode - Azure Firewall
 
-## 1. Outbound Type - User Defined Routing - Azure Firewall
+## Outbound Type - User Defined Routing - Azure Firewall
 
 The simplest solution to securing outbound addresses lies in use of a firewall device that can control outbound traffic based on domain names. Azure Firewall, for example, can restrict outbound HTTP and HTTPS traffic based on the FQDN of the destination. You can also configure your preferred firewall and security rules to allow these required ports and addresses.
 
@@ -8,11 +8,11 @@ IMPORTANT: Outbound type of UDR requires there is a route for 0.0.0.0/0 and next
 
 When using an outbound type of UDR, a load balancer public IP address for inbound requests is not created unless a service of type loadbalancer is configured. A public IP address for outbound requests is never created by AKS if an outbound type of UDR is set.
 
-## 2. Install and Configure Azure Firewall with Ansible (recommended)
+## 1 Install and Configure Azure Firewall with Ansible (recommended)
 
-### 2.1 Prereqs
+### 1.1 Prereqs
 
-### 2.2 Execute playbook for install and creation
+### 1.2 Execute playbook for install and creation
 
 ```
 ansible-playbook add-azure-fw.yml  --vault-password-file .vault-file-password
@@ -24,11 +24,11 @@ IMPORTANT: If the proxy is used in the installation (private), then needs to be 
 oc get proxy cluster -o yaml
 ```
 
-## 3. Checking the Azure Firewall
+## 1.3 Checking the Azure Firewall
 
 [Check Firewall](/docs/check_firewall)
 
-## 4. Create Firewall With AZ Cli (manual :D)
+## 2. Create Firewall With AZ Cli (manual mode - not recommended)
 
 ```
 VNET=$(az network vnet list --query "[?contains(name, '${CLUSTER_NAME}')].{Name:name}" -o tsv)
