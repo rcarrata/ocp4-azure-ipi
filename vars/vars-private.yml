@@ -22,7 +22,7 @@ azure_subnet_compute: 10.10.10.0/24
 azure_subnet_bastion: 10.10.99.0/24
 master_instance_type: Standard_D4s_v3
 master_instance_count: 3
-worker_instance_type: Standard_D4s_v3
+worker_instance_type: Standard_D4s_v3 # for ACM use Standard_D8s_v3
 worker_instance_count: 3
 
 ## The outbound routing strategy used to connect your cluster to the internet.

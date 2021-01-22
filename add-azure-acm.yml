@@ -1,0 +1,10 @@
+- name: "[AZURE-PRIVATE] Add Azure ACM in Private Mode"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+    - vars/vars-acm.yml
+  tasks:
+    - name: Install Azure Infra for ACM
+      include_tasks: roles/ocp4-cloud-ipi/tasks/azure-infra-acm.yml
