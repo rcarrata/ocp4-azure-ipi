@@ -13,3 +13,8 @@ cp -pr vars/example-vars.yml vars/vars-privated.yml
 ```
 ansible-playbook install-private.yml --vault-password-file .vault-file-password
 ```
+
+NOTE: This will use the proxy by default as egress / OutboundType. For other egress modes check the
+egress-firewall, egress-lb and egress-nat documentation.
+
+

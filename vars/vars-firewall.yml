@@ -1,5 +1,4 @@
-# Azure firewall vars
-
+# Azure firewall vars (only working if egress=firewall are set)
 azure_vnet_fw_name: fw-vnet
 azure_vnet_fw_cidr: 10.1.0.0/16
 azure_subnet_fw_name: AzureFirewallSubnet

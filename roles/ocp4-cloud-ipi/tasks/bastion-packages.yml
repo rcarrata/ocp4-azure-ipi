@@ -28,6 +28,7 @@
     state: started
   when:
     - mode == "private"
+    - egress == "proxy"
 
 - name: Create directory for registry contents
   file:

@@ -10,9 +10,17 @@ When using an outbound type of UDR, a load balancer public IP address for inboun
 
 ## 1 Install and Configure Azure Firewall with Ansible (recommended)
 
-### 1.1 Prereqs
+### 1.1 Execute Simple Install
 
-### 1.2 Execute playbook for install and creation
+* Simple & Primary Option:
+
+```
+ansible-playbook install-private.yml -e "egress=firewall" --vault-password-file .vault-file-password
+```
+
+### 1.2 Alternative (NO use it if executed the simple install, mutually exclusivelly)
+
+* Alternative:
 
 ```
 ansible-playbook add-azure-fw.yml  --vault-password-file .vault-file-password
@@ -28,7 +36,12 @@ oc get proxy cluster -o yaml
 
 [Check Firewall](/docs/check_firewall)
 
-## 2. Create Firewall With AZ Cli (manual mode - not recommended)
+
+## 2. Diagram Openshift Install using the Azure Firewall Outbound
+
+
+
+## 3. Create Firewall With AZ Cli (manual mode - not recommended)
 
 ```
 VNET=$(az network vnet list --query "[?contains(name, '${CLUSTER_NAME}')].{Name:name}" -o tsv)

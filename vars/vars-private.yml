@@ -1,7 +1,7 @@
 ## Azure Private Vars
 cloud: "azure"
 mode: "private"
-#ocp4_version: '4.5.24'
+egress: "proxy" # By Default use the Proxy but be can overwrite
 ocp4_version: '4.6.9'
 ocp_img: "{{ ocp4_version }}"
 cluster_name: 'ocp4'
@@ -28,7 +28,7 @@ worker_instance_count: 3
 
 ## The outbound routing strategy used to connect your cluster to the internet.
 ## https://docs.openshift.com/container-platform/4.6/installing/installing_azure/installing-azure-private.html#installation-azure-user-defined-routing_installing-azure-private
-#azure_outboundtype: "Loadbalancer"
+#azure_outboundtype: "Loadbalancer" # Used as extra-vars
 azure_outboundtype: "UserDefinedRouting"
 
 # Azure vm parameters

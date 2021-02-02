@@ -1,6 +1,6 @@
 ---
 
-### Tasks for a IPI Connected Installation
+##### Tasks for a IPI CONNECTED Installation
 #- block:
 #    - import_tasks: azure-infra.yml
 #    - import_tasks: download.yml
@@ -9,20 +9,38 @@
 #    - import_tasks: print_info.yml
 #  when:
 #    - cloud == "azure"
-#    - mode != "private"
+#    - mode == "public"
 
-## Tasks for a IPI Private/Disconnected Installation
+##### Tasks for a IPI PRIVATE/DISCONNECTED Installation
+
+### Private/Disconnected Install of Infrastructure in Azure
 - block:
-    - import_tasks: azure-infra-private.yml
-    - import_tasks: azure-bastion-infra.yml
+    - import_tasks: azure-infra-private.yml # Azure Vnets / Subnets
+    - import_tasks: azure-bastion-infra.yml # Bastion Install
   when:
     - cloud == "azure"
-    - mode == "private"
+    - mode == "private" or mode == "disconnected"
     - action == "provision-infra"
 
 - block:
-    - import_tasks: azure-login.yml
+    - import_tasks: azure-infra-firewall.yml        # Adding the Azure Firewall
+  when:
+    - cloud == "azure"
+    - mode == "private"
+    - egress == "firewall"
+    - action == "provision-infra"
+
+### Private/Disconnected Azure Login/Creds and Bastion Packages
+- block:
+    - import_tasks: bastion-azure-login.yml
     - import_tasks: bastion-packages.yml
+  when:
+    - cloud == "azure"
+    - mode == "private" or mode == "disconnected"
+    - action == "prepare-bastion"
+
+### Private Installation using mode=xxx as Outboundtype (default Proxy)
+- block:
     - import_tasks: download.yml
     - import_tasks: create-config.yml
   when:
@@ -30,9 +48,8 @@
     - mode == "private"
     - action == "prepare-bastion"
 
+### Disconnected installation using Mirror Registry
 - block:
-    - import_tasks: azure-login.yml
-    - import_tasks: bastion-packages.yml
     - import_tasks: bastion-registry.yml
     - import_tasks: download.yml
     - import_tasks: bastion-mirror.yml
@@ -42,6 +59,7 @@
     - mode == "disconnected"
     - action == "prepare-bastion"
 
+### Installation of the Openshift Cluster
 - block:
     - import_tasks: install.yml
   when:

@@ -47,7 +47,7 @@ platform:
     computeSubnet: compute
     outboundType: {{ azure_outboundtype }}
 publish: Internal
-{% if mode == 'private' %}
+{% if egress == 'proxy' %}
 proxy:
   httpProxy: http://{{ registry_cn }}:3128
   httpsProxy: http://{{ registry_cn }}:3128

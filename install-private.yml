@@ -6,6 +6,7 @@
   vars_files:
     - vault/azure.yml
     - vars/vars-private.yml
+    - vars/vars-firewall.yml # Only used in egress=firewall
   environment:
     AZURE_SUBSCRIPTION_ID: "{{ azure_subscription_id }}"
     AZURE_TENANT: "{{ azure_tenant }}"
