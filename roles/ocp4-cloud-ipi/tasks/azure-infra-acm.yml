@@ -27,6 +27,22 @@
     address_prefix: "{{ azure_subnet_acm_bastion }}"
     virtual_network: "{{ azure_vnet_name }}"
 
+- name: Update the route subnet for control-plane
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: control-plane
+    address_prefix: "{{ azure_subnet_controlplane }}"
+    virtual_network: "{{ azure_vnet_name }}"
+    route_table: "{{ azure_fw_rt }}"
+
+- name: Add subnet for compute
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: compute
+    address_prefix: "{{ azure_subnet_compute }}"
+    virtual_network: "{{ azure_vnet_name }}"
+    route_table: "{{ azure_fw_rt }}"
+
 #- name: Link private dns to vnet for acm (original created)
 #  azure_rm_resource:
 #    resource_group: "{{ azure_resource_group }}"
@@ -137,3 +153,6 @@
 
 # TODO: Check the ocp4 private dns virtual link to the vnet
 # TODO: Add installation of the software and elements in the
+
+
+

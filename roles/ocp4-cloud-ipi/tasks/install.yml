@@ -24,6 +24,12 @@
   shell:
     cmd: "{{ user_path }}/openshift-install wait-for install-complete --dir {{ user_path }}"
 
+- name: '[INSTALL_CONFIG] Create the kube filesystem'
+  file:
+    path: "~/.kube/config"
+  when:
+    - local_kubeconfig is defined
+
 - name: '[INSTALL_CONFIG] Copy the Kubeconfig to the know location'
   copy:
     src: "{{ user_path }}/auth/kubeconfig"
