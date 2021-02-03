@@ -26,7 +26,9 @@
 
 - name: '[INSTALL_CONFIG] Create the kube filesystem'
   file:
-    path: "~/.kube/config"
+    path: "~/.kube"
+    state: directory
+    mode: '0755'
   when:
     - local_kubeconfig is defined
 

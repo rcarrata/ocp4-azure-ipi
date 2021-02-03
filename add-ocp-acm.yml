@@ -1,0 +1,49 @@
+- name: "[AZURE-PRIVATE] Extract Bastion IP for connect to the Private cluster"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+  tasks:
+
+    - name: Get facts for one Public IP
+      azure_rm_publicipaddress_info:
+        resource_group: "{{ azure_resource_group }}"
+        name: "{{ azure_vm_name }}01"
+      register: output
+
+    - debug:
+        msg: "{{ output.publicipaddresses.0.ip_address }}"
+
+    - name: Get IP
+      set_fact:
+        azure_vm_public_ip: "{{ output.publicipaddresses.0.ip_address }}"
+
+    - name: Add azure vm into host
+      add_host:
+        name: bastion
+        groups: "inv"
+        ansible_host: '{{ azure_vm_public_ip }}'
+        ansible_connection: ssh
+        ansible_user: "{{ azure_vm_admin_username }}"
+        ansible_ssh_private_key_file: "{{ azure_vm_admin_key_path }}"
+        become: true
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      #changed_when: false
+
+    - name: Check the ssh connection
+      wait_for:
+        port: 22
+        host: '{{ azure_vm_public_ip }}'
+        timeout: 600
+
+# TODO: Install first Kubernetes & Openshift pip3 packages
+- name: "[AZURE-PRIVATE] Install RHACM"
+  hosts: inv
+  become: true
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+  roles:
+    - ocp4-rhacm
+

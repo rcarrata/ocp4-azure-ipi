@@ -4,6 +4,7 @@
   vars_files:
     - vault/azure.yml
     - vars/vars-private.yml
+    - vars/vars-firewall.yml
     - vars/vars-acm.yml
   tasks:
     - name: Install Azure Infra for ACM

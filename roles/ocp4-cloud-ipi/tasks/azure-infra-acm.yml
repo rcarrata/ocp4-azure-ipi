@@ -30,129 +30,16 @@
 - name: Update the route subnet for control-plane
   azure_rm_subnet:
     resource_group: "{{ azure_resource_group }}"
-    name: control-plane
-    address_prefix: "{{ azure_subnet_controlplane }}"
+    name: control-plane-acm
+    address_prefix: "{{ azure_subnet_acm_controlplane }}"
     virtual_network: "{{ azure_vnet_name }}"
     route_table: "{{ azure_fw_rt }}"
 
 - name: Add subnet for compute
   azure_rm_subnet:
     resource_group: "{{ azure_resource_group }}"
-    name: compute
-    address_prefix: "{{ azure_subnet_compute }}"
+    name: compute-acm
+    address_prefix: "{{ azure_subnet_acm_compute }}"
     virtual_network: "{{ azure_vnet_name }}"
     route_table: "{{ azure_fw_rt }}"
-
-#- name: Link private dns to vnet for acm (original created)
-#  azure_rm_resource:
-#    resource_group: "{{ azure_resource_group }}"
-#    provider: network
-#    resource_type: privateDnsZones
-#    resource_name: "{{ azure_dns_zone }}"
-#    subresource:
-#      - type: virtualNetworkLinks
-#        name: "{{ azure_vnet_name}}_link"
-#    api_version: "2018-09-01"
-#    body:
-#      location: global
-#      properties:
-#        virtualNetwork:
-#          id: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.Network/virtualNetworks/{{ azure_vnet_name }}"
-#        registrationEnabled: false
-#    idempotency: yes
-#  register: result_link
-#  retries: 5
-#  delay: 10
-#  until: result_link is not failed
-#
-#- name: Link private dns to vnet for acm (ocp hub created)
-#  azure_rm_resource:
-#    resource_group: "{{ azure_resource_group_ocp4 }}"
-#    provider: network
-#    resource_type: privateDnsZones
-#    resource_name: "{{ azure_dns_ocp4_zone }}"
-#    subresource:
-#      - type: virtualNetworkLinks
-#        name: "{{ azure_vnet_name }}_link"
-#    api_version: "2018-09-01"
-#    body:
-#      location: global
-#      properties:
-#        virtualNetwork:
-#          id: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group_ocp4 }}/providers/Microsoft.Network/virtualNetworks/{{ azure_vnet_name }}"
-#        registrationEnabled: false
-#    idempotency: yes
-#  register: result_link
-#  retries: 5
-#  delay: 10
-#  until: result_link is not failed
-
-## Add Peers for the vNets
-#- name: Create virtual network peering acm-net to ocp4 cluster-net
-#  azure_rm_virtualnetworkpeering:
-#    resource_group: "{{ azure_resource_group }}"
-#    virtual_network: "{{ azure_vnet_name }}"
-#    name: acm2cluster
-#    remote_virtual_network:
-#      resource_group: "{{ azure_resource_group }}"
-#      name: "{{ azure_vnet_name }}"
-#    allow_virtual_network_access: true
-#    allow_forwarded_traffic: true
-#
-#- name: Create virtual network peering from ocp4 cluster-net to acm-net
-#  azure_rm_virtualnetworkpeering:
-#    resource_group: "{{ azure_resource_group }}"
-#    virtual_network: "{{ azure_vnet_name }}"
-#    name: cluster2acm
-#    remote_virtual_network:
-#      resource_group: "{{ azure_resource_group }}"
-#      name: "{{ azure_vnet_name }}"
-#    allow_virtual_network_access: true
-#    allow_forwarded_traffic: true
-
-## Add VM in the ACM Net for debugging
-#- name: Create Network Security Group that allows SSH
-#  azure_rm_securitygroup:
-#    resource_group: "{{ azure_vm_resource_group }}"
-#    name: "{{ azure_vm_acm_name }}"
-#    rules:
-#      - name: SSH
-#        protocol: Tcp
-#        destination_port_range: 22
-#        access: Allow
-#        priority: 1001
-#        direction: Inbound
-#        direction: Inbound
-#      - name: Registry
-#        protocol: Tcp
-#        destination_port_range: 5000
-#        access: Allow
-#        priority: 1002
-#        direction: Inbound
-#
-#- name: Create VM
-#  azure_rm_virtualmachine:
-#    resource_group: "{{ azure_vm_resource_group }}"
-#    name: "{{ azure_vm_acm_name }}"
-#    vm_size: Standard_A1
-#    admin_username: "{{ azure_vm_admin_username }}"
-#    ssh_public_keys:
-#      - key_data: "{{ azure_vm_admin_pub_key }}"
-#        path: "/home/{{ azure_vm_admin_username }}/.ssh/authorized_keys"
-#    virtual_network_resource_group: "{{ azure_vm_resource_group_vnet }}"
-#    virtual_network_name: "{{ azure_vnet_name }}"
-#    subnet_name: "{{ azure_vm_acm_subnet }}"
-#    ssh_password_enabled: false
-#    image:
-#      offer: CentOS
-#      publisher: OpenLogic
-#      sku: 8.0
-#      version: latest
-#      no_log: true
-#  register: output
-
-# TODO: Check the ocp4 private dns virtual link to the vnet
-# TODO: Add installation of the software and elements in the
-
-
 
