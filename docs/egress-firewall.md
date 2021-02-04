@@ -18,28 +18,13 @@ When using an outbound type of UDR, a load balancer public IP address for inboun
 ansible-playbook install-private.yml -e "egress=firewall" --vault-password-file .vault-file-password
 ```
 
-### 1.2 Alternative (NO use it if executed the simple install, mutually exclusivelly)
-
-* Alternative:
-
-```
-ansible-playbook add-azure-fw.yml  --vault-password-file .vault-file-password
-```
-
-IMPORTANT: If the proxy is used in the installation (private), then needs to be removed from the, because this will be used in all the pods within the pods:
-
-```
-oc get proxy cluster -o yaml
-```
-
 ## 1.3 Checking the Azure Firewall
 
 [Check Firewall](/docs/check_firewall)
 
-
 ## 2. Diagram Openshift Install using the Azure Firewall Outbound
 
-
+<img align="center" width="750" src="../pics/egress_fw.png">
 
 ## 3. Create Firewall With AZ Cli (manual mode - not recommended)
 
