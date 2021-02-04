@@ -8,23 +8,26 @@ IMPORTANT: Outbound type of UDR requires there is a route for 0.0.0.0/0 and next
 
 When using an outbound type of UDR, a load balancer public IP address for inbound requests is not created unless a service of type loadbalancer is configured. A public IP address for outbound requests is never created by AKS if an outbound type of UDR is set.
 
-## 1 Install and Configure Azure Firewall with Ansible (recommended)
-
-### 1.1 Execute Simple Install
-
-* Simple & Primary Option:
+## 1. Install Openshift with Azure Firewall as the Egress Outbound
 
 ```
 ansible-playbook install-private.yml -e "egress=firewall" --vault-password-file .vault-file-password
 ```
 
-## 1.3 Checking the Azure Firewall
+For more information check the [Official Openshift 4 installation in
+Azure](https://docs.openshift.com/container-platform/4.6/installing/installing_azure/installing-azure-private.html#installation-azure-user-defined-routing_installing-azure-private).
 
-[Check Firewall](/docs/check_firewall)
+## 1.2 Checking the Azure Firewall
+
+[Check Firewall](/docs/check_firewall.md)
+
+## 1.3 Connect to the Private Cluster
+
+* [Connect to the Private Cluster](/docs/connect-private-cluster.md)
 
 ## 2. Diagram Openshift Install using the Azure Firewall Outbound
 
-<img align="center" width="750" src="pics/egress_azure_fw.png">
+<img align="center" width="850" src="pics/egress_azure_fw.png">
 
 ## 3. Create Firewall With AZ Cli (manual mode - not recommended)
 

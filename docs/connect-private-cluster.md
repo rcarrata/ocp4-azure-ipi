@@ -12,4 +12,4 @@ Last login: Wed Jan 20 18:19:06 2021 from 77.228.91.197
 
 * And then connect using the Proxy Socks with the DNS option enabled. An example with Firefox is:
 
-<img align="center" width="750" src="../pics/proxy_socks_dns.png">
+<img align="center" width="750" src="pics/proxy_socks_dns.png">
