@@ -1,4 +1,4 @@
-## Check Firewall approach
+## Check Firewall connectivity
 
 ```
 [root@bastion ocp4]# oc get pod -n openshift-authentication oauth-openshift-55b7b69d94-lnhp9

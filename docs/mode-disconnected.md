@@ -11,5 +11,5 @@ cp -pr varsnexample-vars.yml vars/vars-disconnected.yml
 ## Execute the installation
 
 ```
-ansible-playbook install-private.yml --vault-password-file .vault-file-password
+ansible-playbook install-disconnected.yml --vault-password-file .vault-file-password
 ```

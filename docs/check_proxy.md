@@ -1,6 +1,6 @@
 ## Check connectivity through the proxy
 
-Check the http_proxy inside of the cluster
+* Check the http_proxy inside of the cluster
 
 ```
 [root@bastion ~]# oc run debug-pod --image registry.access.redhat.com/rhel7/rhel-tools -i --tty --rm

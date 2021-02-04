@@ -11,7 +11,7 @@ There are different approaches for each mode, but always an IPI installation is 
 ## Installation Modes
 
 * [Connected Installation](/docs/mode-connected.md)
-* [Private Installation](/docs/mode-privated.md)
+* [Private Installation](/docs/mode-private.md)
 * [Disconnected Installation](/docs/mode-disconnected.md)
 
 ## Egress modes
@@ -20,3 +20,8 @@ There are different approaches for each mode, but always an IPI installation is 
 * [Proxy in Bastion Host](/docs/check_proxy.md)
 * [Azure Firewall](/docs/egress-firewall.md)
 * [Nat Gateway](/docs/egress-nat.md)
+
+## Ingress Modes
+
+* [Ingress in Connected Mode](/docs/ingress-connected.md)
+* [Ingress in Private Mode](/docs/ingress-private.md)
