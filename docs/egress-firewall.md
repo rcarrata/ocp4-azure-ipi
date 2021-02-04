@@ -19,7 +19,7 @@ Azure](https://docs.openshift.com/container-platform/4.6/installing/installing_a
 
 ## 1.2 Checking the Azure Firewall
 
-[Check Firewall](/docs/check_firewall.md)
+* [Check Firewall](/docs/check_firewall.md)
 
 ## 1.3 Connect to the Private Cluster
 

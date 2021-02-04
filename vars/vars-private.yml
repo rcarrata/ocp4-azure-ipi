@@ -28,7 +28,7 @@ worker_instance_count: 3
 
 ## The outbound routing strategy used to connect your cluster to the internet.
 ## https://docs.openshift.com/container-platform/4.6/installing/installing_azure/installing-azure-private.html#installation-azure-user-defined-routing_installing-azure-private
-#azure_outboundtype: "Loadbalancer" # Used as extra-vars
+#azure_outboundtype: "LoadBalancer" # Used as extra-vars
 azure_outboundtype: "UserDefinedRouting"
 
 # Azure vm parameters
