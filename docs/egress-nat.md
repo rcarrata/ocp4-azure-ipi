@@ -14,4 +14,4 @@ TODO
 
 ## 2. Diagram Openshift Install using the Azure Nat Gateway Outbound
 
- <img align="center" width="750" src="pics/egress_azure_nat.png">
+ <img align="center" width="750" src="pics/egress_azure_nat_gw.png">

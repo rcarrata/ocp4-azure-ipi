@@ -1,3 +1,3 @@
-# Egress Nat
+# Openshift 4 Ingress in Connected/Public Mode
 
-TODO and TOTEST
+ <img align="center" width="750" src="pics/ingress.png">

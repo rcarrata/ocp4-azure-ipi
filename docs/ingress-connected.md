@@ -1,3 +1,4 @@
-# Egress Nat
+# Openshift 4 Ingress in Connected/Public Mode
 
-TODO and TOTEST
+To Be Documented
+

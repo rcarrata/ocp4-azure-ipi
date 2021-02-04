@@ -17,11 +17,11 @@ There are different approaches for each mode, but always an IPI installation is 
 ## Egress modes
 
 * [Default with LoadBalancer](/docs/egress-default.md)
-* [Proxy in Bastion Host](/docs/check_proxy.md)
+* [Proxy in Bastion Host](/docs/egress-proxy.md)
 * [Azure Firewall](/docs/egress-firewall.md)
 * [Nat Gateway](/docs/egress-nat.md)
 
 ## Ingress Modes
 
-* [Ingress in Connected Mode](/docs/ingress-connected.md)
+* [Ingress in Public/Connected Mode](/docs/ingress-connected.md)
 * [Ingress in Private Mode](/docs/ingress-private.md)
