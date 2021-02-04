@@ -24,7 +24,7 @@ ansible-playbook install-private.yml -e "egress=firewall" --vault-password-file 
 
 ## 2. Diagram Openshift Install using the Azure Firewall Outbound
 
-<img align="center" width="750" src="/pics/egress_azure_fw.png">
+<img align="center" width="750" src="docs/pics/egress_azure_fw.png">
 
 ## 3. Create Firewall With AZ Cli (manual mode - not recommended)
 
