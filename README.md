@@ -4,6 +4,8 @@ Ansible Repository for deploy Openshift 4 clusters with IPI installation in conn
 
 There are different approaches for each mode, but always an IPI installation is used.
 
+ <img align="center" width="750" src="pics/azure_ocp4_pic.png">
+
 ## Prereqs
 
 * [Prerequisites Doc](/docs/prereqs.md)
