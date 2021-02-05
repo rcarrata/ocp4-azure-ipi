@@ -3,10 +3,10 @@ First add the vault directory and the vault yaml:
 * Generate a Vault-File with the credentials of Azure and OCP4 PullSecret:
 
 ```
-$ ansible-vault edit vault/vault.yml
+$ ansible-vault edit vault/azure.yml
 ```
 
-and fill inside the vault.yml with:
+* Fill inside the vault.yml with:
 
 ```
 azure_subscription_id: SECRET
@@ -16,7 +16,7 @@ azure_tenant: SECRET
 ocp4_pull_secret: '<<< pull_secret_azure >>>'
 ```
 
-for obtain the pull_secret go to [OCP4 Install](https://cloud.redhat.com/openshift/install)
+* For obtain the pull_secret go to [OCP4 Install](https://cloud.redhat.com/openshift/install)
 
 * Generate the .vault-password-file and put the password
 

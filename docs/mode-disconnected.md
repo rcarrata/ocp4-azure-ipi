@@ -2,10 +2,10 @@
 
 ## Fill the vars
 
-* Copy or generate the vars.yml and customize to fill your needs:
+* Edit the vars-private.yml and customize to fill your needs:
 
 ```
-cp -pr varsnexample-vars.yml vars/vars-disconnected.yml
+vim vars/vars-disconnected.yml
 ```
 
 ## Execute the installation
@@ -13,3 +13,5 @@ cp -pr varsnexample-vars.yml vars/vars-disconnected.yml
 ```
 ansible-playbook install-disconnected.yml --vault-password-file .vault-file-password
 ```
+
+## OutboundMode
