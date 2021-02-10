@@ -40,6 +40,7 @@ azure_vm_admin_username: az-admin
 azure_vm_admin_key_path: "vault/ssh-key"
 azure_vm_admin_pub_key: "{{ lookup('file', 'vault/ssh-key.pub') }}"
 
+## TODO: Not used in Private Mode. Check if I can delete them.
 # Bastion Registry parameters
 registry_user: registry
 registry_password: password

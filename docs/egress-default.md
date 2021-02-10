@@ -3,7 +3,7 @@
 ## 1 Install and Configure Azure with Load Balancer as Egress Outbound
 
 ```
-ansible-playbook install-private.yml -e "egress=LoadBalancer" -e "azure_outboundtype=LoadBalancer" --vault-password-file .vault-file-password
+ansible-playbook install-private.yml -e "egress=Loadbalancer" -e "azure_outboundtype=Loadbalancer" --vault-password-file .vault-file-password
 ```
 
 ## 1.2 Connect to the Private Cluster

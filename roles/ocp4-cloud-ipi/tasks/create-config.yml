@@ -5,13 +5,14 @@
   template:
     src: install-config.yaml.j2
     dest: "{{ user_path }}/install-config.yaml"
-  when: mode != "private"
+  when:
+    - mode == "public"
 
 - name: '[CREATE-CONFIG] Generate config install-config.yaml'
   template:
     src: install-config-private.yaml.j2
     dest: "{{ user_path }}/install-config.yaml"
-  when: mode == "private"
+  when: mode == "private" or mode == "disconnected"
 
 - name: "[CREATE-CONFIG] Make a copy of the cluster install config "
   block:
