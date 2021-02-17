@@ -6,17 +6,29 @@ There are different approaches for each mode, but always an IPI installation is 
 
  <img align="center" width="450" src="docs/pics/azure_ocp4_pic.png">
 
-## Prereqs
+## 1. Prereqs
 
 * [Prerequisites Doc](/docs/prereqs.md)
 
-## Installation Modes
+## 2. Installation Modes
 
 * [Connected Installation](/docs/mode-connected.md)
 * [Private Installation](/docs/mode-private.md)
 * [Disconnected Installation](/docs/mode-disconnected.md)
 
-## Egress modes
+## 3. Egress/Outbound modes
+
+### 3.1 Connected/Public Openshift cluster Egress/Outbound mode
+
+By default in the Connected/Public Clusters the Egress / Outbound connections to Internet is
+performed using the LoadBalancer Egress mode:
+
+* [Default with LoadBalancer](/docs/egress-default.md)
+
+### 3.2 Private Openshift cluster Egress/Outbound mode
+
+By default in the Private / Public Clusters the OutboundType is LoadBalancer, but other
+possibilities can be used for the Egress/Outbound mode
 
 * [Default with LoadBalancer](/docs/egress-default.md)
 * [Proxy in Bastion Host](/docs/egress-proxy.md)
@@ -27,3 +39,4 @@ There are different approaches for each mode, but always an IPI installation is 
 
 * [Ingress in Public/Connected Mode](/docs/ingress-connected.md)
 * [Ingress in Private Mode](/docs/ingress-private.md)
+* [Ingress in Disconnected Mode](/docs/ingress-disconnected.md)
