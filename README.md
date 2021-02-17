@@ -35,7 +35,13 @@ possibilities can be used for the Egress/Outbound mode
 * [Azure Firewall](/docs/egress-firewall.md)
 * [Nat Gateway](/docs/egress-nat.md)
 
-## Ingress Modes
+### 3.3 Disconnected Openshift Cluster Egress/Outbound mode
+
+By default NO egress/outbound is allowed to Internet because is a Disconnected environment
+
+* [Nat Gateway](/docs/egress-disconnected.md)
+
+## 4. Ingress Modes
 
 * [Ingress in Public/Connected Mode](/docs/ingress-connected.md)
 * [Ingress in Private Mode](/docs/ingress-private.md)
