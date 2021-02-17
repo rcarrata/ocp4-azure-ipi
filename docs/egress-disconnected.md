@@ -1,4 +1,3 @@
-# Openshift 4 Ingress in Connected/Public Mode
+# Openshift 4 Egress in Disconnected Mode
 
-To Be Documented
-
+ <img align="center" width="750" src="pics/egress_azure_disconnected.png">

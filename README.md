@@ -39,7 +39,7 @@ possibilities can be used for the Egress/Outbound mode
 
 By default NO egress/outbound is allowed to Internet because is a Disconnected environment
 
-* [Nat Gateway](/docs/egress-disconnected.md)
+* [Disconnected Egress](/docs/egress-disconnected.md)
 
 ## 4. Ingress Modes
 
