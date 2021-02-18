@@ -27,7 +27,7 @@
     address_prefix: "{{ azure_subnet_acm_bastion }}"
     virtual_network: "{{ azure_vnet_name }}"
 
-- name: Update the route subnet for control-plane
+- name: Update the route subnet for control-plane-acm
   azure_rm_subnet:
     resource_group: "{{ azure_resource_group }}"
     name: control-plane-acm
@@ -35,7 +35,7 @@
     virtual_network: "{{ azure_vnet_name }}"
     route_table: "{{ azure_fw_rt }}"
 
-- name: Add subnet for compute
+- name: Add subnet for compute-acm
   azure_rm_subnet:
     resource_group: "{{ azure_resource_group }}"
     name: compute-acm

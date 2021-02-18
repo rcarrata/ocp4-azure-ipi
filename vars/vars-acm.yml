@@ -1,12 +1,11 @@
 # Azure parameters for managed region
-azure_vnet_acm_name: ocp4-managed
-azure_vnet_acm_cidr: 10.11.0.0/16
+# VNET is the SAME as ocp4-vnet (deploying in the same vnet also the ACM)
 azure_subnet_acm_controlplane: 10.10.20.0/24
 azure_subnet_acm_compute: 10.10.30.0/24
 azure_subnet_acm_bastion: 10.10.40.0/24
 master_instance_type: Standard_D4s_v3
 master_instance_count: 3
-worker_instance_type: Standard_D4s_v3
+worker_instance_type: Standard_D8s_v3
 worker_instance_count: 3
 
 # Azure vm parameters
@@ -15,4 +14,4 @@ azure_vm_acm_subnet: bastion
 
 # For link the dns privated of ocp4 to the ocp4-managed
 azure_dns_ocp4_zone: "{{ cluster_name }}.az.{{ azure_dns_root }}"
-azure_resource_group_ocp4: "ocp4-r6rtp-rg" # CHANGE every time. TODO: Request automatically
+#azure_resource_group_ocp4: "ocp4-r6rtp-rg" # CHANGE every time. TODO: Request automatically
