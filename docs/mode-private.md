@@ -20,6 +20,13 @@ NOTE: This will use the proxy by default as egress / OutboundType. For other egr
 
 <img align="center" width="750" src="pics/egress_azure_proxy.png">
 
+The following items are not required or created when you install a private cluster:
+
+* A BaseDomainResourceGroup, since the cluster does not create public records
+* Public IP addresses
+* Public DNS records
+* Public endpoints
+
 ## Egress modes [Alternatives]
 
 * [Default with LoadBalancer](/docs/egress-default.md)

@@ -68,3 +68,8 @@
   retries: 5
   delay: 10
   until: result_link is not failed
+
+# TODO: Add the Security Groups?
+# https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-private.html#installation-about-custom-azure-vnet-nsg-requirements_installing-azure-private
+
+# Could be the reason for the disconnected failure of the Blobs Ignition?

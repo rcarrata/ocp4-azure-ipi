@@ -29,3 +29,9 @@ Azure](https://docs.openshift.com/container-platform/4.6/installing/installing_a
 
 <img align="center" width="850" src="pics/egress_azure_fw.png">
 
+The following items are not required or created when you install a private cluster:
+
+* A BaseDomainResourceGroup, since the cluster does not create public records
+* Public IP addresses
+* Public DNS records
+* Public endpoints
