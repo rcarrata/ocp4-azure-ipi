@@ -2,10 +2,10 @@
 
 ##### Tasks for a IPI CONNECTED Installation
 - block:
-    - import_tasks: azure-infra.yml
-    - import_tasks: download.yml
-    - import_tasks: create-config.yml
-    - import_tasks: install.yml
+#- import_tasks: azure-infra.yml
+#    - import_tasks: download.yml
+#    - import_tasks: create-config.yml
+#    - import_tasks: install.yml
     - import_tasks: print-info.yml
   when:
     - cloud == "azure"
@@ -24,6 +24,7 @@
     - mode == "private" or mode == "disconnected"
     - action == "provision-infra"
 
+### Adding the Azure Private only for Private Installs and Egress Modes Azure firewall
 - block:
     - import_tasks: azure-infra-firewall.yml        # Adding the Azure Firewall
   when:
@@ -68,3 +69,4 @@
   when:
     - cloud == "azure"
     - action == "install"
+    - mode == "private" or mode == "disconnected"

@@ -1,0 +1,22 @@
+---
+
+- name: "[AZURE-UNINSTALL] Destroy Azure Openshift Cluster"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars.yml
+  tasks:
+    - name: Delete the Openshift Cluster
+      include_tasks: roles/ocp4-cloud-ipi/tasks/uninstall.yml
+
+- name: "[AZURE-PRIVATE] Destroy Azure Openshift Cluster"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars.yml
+  tasks:
+    - name: Destroy Resource Group of Openshift
+      include_tasks: roles/ocp4-cloud-ipi/tasks/azure-infra-destroy.yml
+

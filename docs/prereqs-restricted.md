@@ -68,3 +68,5 @@ Before launch the installation, need to be created these prerequisites:
 - 3 Subnets (1 for Masters, 1 for Workers, 1 for Bastion)
 - 1 Bastion (optional) + 1 IP Public to reach
 - 1 Network Security Group (?? To Check)
+
+## Automation for deploy this prereqs

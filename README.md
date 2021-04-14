@@ -48,3 +48,8 @@ By default NO egress/outbound is allowed to Internet because is a Disconnected e
 * [Ingress in Public/Connected Mode](/docs/ingress-connected.md)
 * [Ingress in Private Mode](/docs/ingress-private.md)
 * [Ingress in Disconnected Mode](/docs/ingress-disconnected.md)
+
+## 5. Platforms Tested
+
+* Tested from Fedora33 with Ansible 2.9.18 and python 3.8.6
+* Openshift 4.6.x and Openshift 4.7.x

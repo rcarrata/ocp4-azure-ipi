@@ -5,7 +5,7 @@ ocp4_version: '4.7.5'
 cluster_name: 'ocp4'
 ocp_base_domain_name: "{{ azure_dns_zone }}"
 ocp_machine_cidr: "{{ azure_vnet_cidr }}"
-local_kubeconfig: '~/.kube/{{ cluster_name }}'
+local_kubeconfig: '{{ user_path }}/auth/kubeconfig'
 azure_vm_admin_pub_key: "{{ lookup('file', 'vault/ssh-key.pub') }}"
 
 # Azure parameters

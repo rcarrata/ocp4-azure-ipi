@@ -1,6 +1,6 @@
 ---
 
-- name: "Create Azure Openshift Cluster"
+- name: "Create Azure Openshift Cluster in mode Connected/Public"
   hosts: localhost
   gather_facts: yes
   vars_files:
@@ -11,5 +11,9 @@
     AZURE_TENANT: "{{ azure_tenant }}"
     AZURE_CLIENT_ID: "{{ azure_client_id }}"
     AZURE_SECRET: "{{ azure_secret }}"
-  roles:
-    - ocp4-cloud-ipi
+  tasks:
+    - name: "Provision Cluster in Connected Mode"
+      include_role:
+        name: ocp4-cloud-ipi
+      vars:
+        action: none
