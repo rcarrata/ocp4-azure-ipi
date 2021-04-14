@@ -27,7 +27,7 @@ performed using the LoadBalancer Egress mode:
 
 * [Default with LoadBalancer](/docs/egress-default.md)
 
-### 3.2 Private Openshift cluster Egress/Outbound mode
+### 3.2 Private/Restricted Openshift cluster Egress/Outbound mode
 
 By default in the Private / Public Clusters the OutboundType is LoadBalancer, but other
 possibilities can be used for the Egress/Outbound mode
@@ -37,7 +37,7 @@ possibilities can be used for the Egress/Outbound mode
 * [Azure Firewall](/docs/egress-firewall.md)
 * [Nat Gateway](/docs/egress-nat.md)
 
-### 3.3 Disconnected Openshift Cluster Egress/Outbound mode
+### 3.3 Disconnected/Air Gapped Openshift Cluster Egress/Outbound mode
 
 By default NO egress/outbound is allowed to Internet because is a Disconnected environment
 
