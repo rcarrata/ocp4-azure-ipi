@@ -54,7 +54,7 @@ Port - Description
 22623  Allows communication to the machine config server
 ```
 
-<img align="center" width="750" src="pics/securitygroups_prereqs.png">
+<img align="center" width="750" src="pics/securitygroups_prereqs2.png">
 
 ## Diagram for Prerequites in Azure
 
