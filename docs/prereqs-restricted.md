@@ -10,6 +10,12 @@ The installation program must also be able to resolve the DNS records
 that the cluster requires. The installation program configures the Ingress Operator and API server
 for only internal traffic.
 
+## [Required Azure Roles](https://docs.openshift.com/container-platform/latest/installing/installing_azure/installing-azure-account.html)
+
+The Azure User Account need to have the following roles for the subscription:
+
+* User Access Administrator
+
 ## [User-Defined Outbound Routing](https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-private.html#installation-azure-user-defined-routing_installing-azure-private)
 
 In OpenShift Container Platform, you can choose your own outbound routing for a cluster to connect to the Internet. This allows you to skip the creation of public IP addresses and the public load balancer.
@@ -54,7 +60,7 @@ Port - Description
 22623  Allows communication to the machine config server
 ```
 
-<img align="center" width="750" src="pics/securitygroups_prereqs.png">
+<img align="center" width="750" src="pics/securitygroups_prereqs2.png">
 
 ## Diagram for Prerequites in Azure
 

@@ -15,6 +15,7 @@ azure_dns_root: asimov.lab
 azure_resource_group: ocp4-rg
 azure_location: eastus
 azure_vnet_name: ocp4-vnet
+azure_nsg_name: ocp4-nsg
 azure_dns_zone: "az.{{ azure_dns_root }}"
 azure_vnet_cidr: 10.10.0.0/16
 azure_subnet_controlplane: 10.10.1.0/24

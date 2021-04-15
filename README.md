@@ -54,3 +54,8 @@ By default NO egress/outbound is allowed to Internet because is a Disconnected e
 * Tested from Fedora33 with Ansible 2.9.18 and python 3.6
 * Openshift 4.6.x and Openshift 4.7.x
 * Latest Tested - 4.7.2
+
+## 6. TODO
+
+* Add the option of VPN to connect to the cluster instead of Proxy Socks
+* Add new model for Air Gapped Installation
