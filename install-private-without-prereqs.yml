@@ -1,0 +1,41 @@
+---
+
+- name: "[OCP4-INSTALL] Create Azure Openshift Cluster in Private/Disconnected Mode"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+    - vars/vars-firewall.yml # Only used in egress=firewall
+  environment:
+    AZURE_SUBSCRIPTION_ID: "{{ azure_subscription_id }}"
+    AZURE_TENANT: "{{ azure_tenant }}"
+    AZURE_CLIENT_ID: "{{ azure_client_id }}"
+    AZURE_SECRET: "{{ azure_secret }}"
+  tasks:
+    - name: Install Bastion Infra Azure
+      include_tasks: roles/ocp4-cloud-ipi/tasks/azure-bastion-infra.yml
+
+- name: "[OCP4-INSTALL] Create Azure Openshift Cluster in Private/Disconnected mode"
+  hosts: inv
+  become: true
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+  environment:
+    AZURE_SUBSCRIPTION_ID: "{{ azure_subscription_id }}"
+    AZURE_TENANT: "{{ azure_tenant }}"
+    AZURE_CLIENT_ID: "{{ azure_client_id }}"
+    AZURE_SECRET: "{{ azure_secret }}"
+  tasks:
+    - name: Install SW and Configure Registry into the Bastion
+      include_role:
+        name: ocp4-cloud-ipi
+      vars:
+        action: prepare-bastion
+
+    - name: Install cluster
+      include_role:
+        name: ocp4-cloud-ipi
+      vars:
+        action: install

@@ -5,6 +5,55 @@
     name: "{{ azure_resource_group }}"
     location: "{{ azure_location }}"
 
+# TODO: Check if 443/80 and 22643 are needed during the Install
+# Assuming that 443/80 yes because they needed for the access to the Apps from outside of the VNet
+# (ExpressRoute, etc)
+- name: Create Network Security Group for OCP4
+  azure_rm_securitygroup:
+    resource_group: "{{ azure_vm_resource_group }}"
+    name: "{{ azure_nsg_name }}"
+    rules:
+      - name: apiserver_in
+        protocol: Tcp
+        access: Allow
+        priority: 101
+        direction: Inbound
+        destination_port_range: 6443
+      - name: apps_http_in
+        description: "No public IP Exposed in Private Mode. Only reachable within VNet/Peering or ExpressRoute"
+        protocol: Tcp
+        access: Allow
+        priority: 102
+        direction: Inbound
+        source_address_prefix: Internet
+        destination_port_range: 80
+      - name: apps_https_in
+        description: "No public IP Exposed in Private Mode. Only reachable within VNet/Peering or ExpressRoute"
+        protocol: Tcp
+        access: Allow
+        priority: 103
+        direction: Inbound
+        source_address_prefix: Internet
+        destination_port_range: 443
+      - name: mcs_in
+        description: "Not needed because the 65000 - AllowVnetInBound allows Any traffic inside of the Vnet, and master&workers subnets are in the same Vnet"
+        protocol: Tcp
+        access: Allow
+        priority: 104
+        direction: Inbound
+        source_address_prefix: VirtualNetwork
+        destination_port_range: 22623
+        destination_address_prefix: VirtualNetwork
+        #
+        #  Bastion is INSIDE of the VNet. Port 22 is reachable of Any Nay VNet to Vnet in port 65001
+        #- name: bootstrap_ssh_in
+        #  description: "Only needed during the OCP4 Install for Tshoot Purposes. Delete after"
+        #  protocol: Tcp
+        #  destination_port_range: 22
+        #  access: Allow
+        #  priority: 103
+        #  direction: Inbound
+
 - name: Create virtual network
   azure_rm_virtualnetwork:
     resource_group: "{{ azure_resource_group }}"
@@ -17,6 +66,7 @@
     name: control-plane
     address_prefix: "{{ azure_subnet_controlplane }}"
     virtual_network: "{{ azure_vnet_name }}"
+    security_group: "{{ azure_nsg_name }}"
 
 - name: Add subnet for compute
   azure_rm_subnet:
@@ -24,6 +74,7 @@
     name: compute
     address_prefix: "{{ azure_subnet_compute }}"
     virtual_network: "{{ azure_vnet_name }}"
+    security_group: "{{ azure_nsg_name }}"
 
 - name: Add subnet for bastion
   azure_rm_subnet:
