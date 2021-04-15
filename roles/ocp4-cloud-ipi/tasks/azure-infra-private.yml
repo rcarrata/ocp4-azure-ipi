@@ -19,7 +19,7 @@
         priority: 101
         direction: Inbound
         destination_port_range: 6443
-      - name: apps_http
+      - name: apps_http_in
         description: "No public IP Exposed in Private Mode. Only reachable within VNet/Peering or ExpressRoute"
         protocol: Tcp
         access: Allow
@@ -27,7 +27,7 @@
         direction: Inbound
         source_address_prefix: Internet
         destination_port_range: 80
-      - name: apps_https
+      - name: apps_https_in
         description: "No public IP Exposed in Private Mode. Only reachable within VNet/Peering or ExpressRoute"
         protocol: Tcp
         access: Allow
@@ -35,12 +35,16 @@
         direction: Inbound
         source_address_prefix: Internet
         destination_port_range: 443
-      - name: AllowVnetInbound
+      - name: mcs_in
+        description: "Not needed because the 65000 - AllowVnetInBound allows Any traffic inside of the Vnet, and master&workers subnets are in the same Vnet"
         protocol: Tcp
         access: Allow
-        priority: 65000
-        direction: Outbound
-        source_address_prefix: AzureLoadBalancer
+        priority: 104
+        direction: Inbound
+        source_address_prefix: VirtualNetwork
+        destination_port_range: 22623
+        destination_address_prefix: VirtualNetwork
+        #
         #  Bastion is INSIDE of the VNet. Port 22 is reachable of Any Nay VNet to Vnet in port 65001
         #- name: bootstrap_ssh_in
         #  description: "Only needed during the OCP4 Install for Tshoot Purposes. Delete after"
