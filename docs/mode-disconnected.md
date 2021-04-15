@@ -1,4 +1,6 @@
-# IPI Installation - Mode Disconnected
+# IPI Installation - Mode Disconnected (Under Reconstruction)
+
+AirGapped in IPI is NOT Supported, because of lack of [Virtual Service Endpoints for Azure Resource Manager]()
 
 ## Fill the vars
 
@@ -14,9 +16,11 @@ vim vars/vars-disconnected.yml
 ansible-playbook install-disconnected.yml --vault-password-file .vault-file-password
 ```
 
-## Diagram for Disconnected Mode
+## Diagram for Disconnected Mode (Ongoing)
 
-<img align="center" width="750" src="pics/egress_azure_proxy.png">
+```
+To be Modified.
+```
 
 The following items are not required or created when you install a private cluster:
 

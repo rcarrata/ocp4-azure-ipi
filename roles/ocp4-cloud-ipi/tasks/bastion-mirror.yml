@@ -45,7 +45,7 @@
 
 - name: Verify that images are present and pullable
   podman_image:
-    name: "{{ registry_url }}/{{ LOCAL_REPOSITORY }}:{{ ocp_img }}-operator-lifecycle-manager"
+    name: "{{ registry_url }}/{{ LOCAL_REPOSITORY }}:{{ OCP_RELEASE }}-operator-lifecycle-manager"
     auth_file: "{{ registry_custom_pull_secret_path }}"
 
 - name: Check release info to make sure it works

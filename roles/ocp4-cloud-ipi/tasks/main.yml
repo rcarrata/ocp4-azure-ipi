@@ -2,10 +2,10 @@
 
 ##### Tasks for a IPI CONNECTED Installation
 - block:
-#- import_tasks: azure-infra.yml
-#    - import_tasks: download.yml
-#    - import_tasks: create-config.yml
-#    - import_tasks: install.yml
+    - import_tasks: azure-infra.yml
+    - import_tasks: download.yml
+    - import_tasks: create-config.yml
+    - import_tasks: install.yml
     - import_tasks: print-info.yml
   when:
     - cloud == "azure"

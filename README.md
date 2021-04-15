@@ -37,7 +37,7 @@ possibilities can be used for the Egress/Outbound mode
 * [Azure Firewall](/docs/egress-firewall.md)
 * [Nat Gateway](/docs/egress-nat.md)
 
-### 3.3 Disconnected/Air Gapped Openshift Cluster Egress/Outbound mode
+### 3.3 Disconnected/Air Gapped Openshift Cluster Egress/Outbound mode (ongoing)
 
 By default NO egress/outbound is allowed to Internet because is a Disconnected environment
 
@@ -51,5 +51,6 @@ By default NO egress/outbound is allowed to Internet because is a Disconnected e
 
 ## 5. Platforms Tested
 
-* Tested from Fedora33 with Ansible 2.9.18 and python 3.8.6
+* Tested from Fedora33 with Ansible 2.9.18 and python 3.6
 * Openshift 4.6.x and Openshift 4.7.x
+* Latest Tested - 4.7.2
