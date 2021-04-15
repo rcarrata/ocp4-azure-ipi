@@ -70,3 +70,10 @@ Before launch the installation, need to be created these prerequisites:
 - 1 Network Security Group (?? To Check)
 
 ## Automation for deploy this prereqs
+
+If you want to install only the prerequisites listed in this doc, please review the
+vars/vars-private.yaml and execute the following:
+
+```
+ansible-playbook install-private-prereqs-only.yml --vault-password-file .vault-file-password
+```
