@@ -27,7 +27,7 @@ Azure](https://docs.openshift.com/container-platform/4.6/installing/installing_a
 
 ## 2. Diagram Openshift Install using the Azure Firewall Outbound
 
-<img align="center" width="850" src="pics/egress_azure_fw.png">
+<img align="center" width="850" src="pics/egress_azure_fw2.png">
 
 The following items are not required or created when you install a private cluster:
 
