@@ -149,23 +149,41 @@
 #              - www.redhat.com
 #        name: redhatrule
 
+
 ## Due to the issue https://github.com/ansible-collections/azure/issues/395 the app rule needs to be added with shell command.
-- name: Create Azure Firewall App Rule for Google resources
-  shell: "az network firewall application-rule create --collection-name App-Google-Rules --firewall-name {{ azure_fw_name }} --name Allow-Google --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *google.com --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 100 --action Allow"
-  ignore_errors: yes
 
-- name: Create Azure Firewall App Rule for Microsoft resources
-  shell: "az network firewall application-rule create --collection-name App-Microsoft-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *azure.com *microsoft.com *microsoftonline.com *windows.net --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 200 --action Allow"
-  ignore_errors: yes
+## Blacklisting: Adding rules for exit to internet only for certain urls
+- block:
+    - name: Create Azure Firewall App Rule for Google resources
+      shell: "az network firewall application-rule create --collection-name App-Google-Rules --firewall-name {{ azure_fw_name }} --name Allow-Google --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *google.com --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 100 --action Allow"
+      ignore_errors: yes
 
-- name: Create Azure Firewall App Rule for Red Hat resources
-  shell: "az network firewall application-rule create --collection-name App-Redhat-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *redhat.com *redhat.io *quay.io *openshift.com  --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 300 --action Allow"
-  ignore_errors: yes
+    - name: Create Azure Firewall App Rule for Microsoft resources
+      shell: "az network firewall application-rule create --collection-name App-Microsoft-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *azure.com *microsoft.com *microsoftonline.com *windows.net --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 200 --action Allow"
+      ignore_errors: yes
 
-- name: Create Azure Firewall App Rule for Github resources
-  shell: "az network firewall application-rule create --collection-name App-Github-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *github.com  --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 400 --action Allow"
-  ignore_errors: yes
+    - name: Create Azure Firewall App Rule for Red Hat resources
+      shell: "az network firewall application-rule create --collection-name App-Redhat-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *redhat.com *redhat.io *quay.io *openshift.com  --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 300 --action Allow"
+      ignore_errors: yes
 
-- name: Create Azure Firewall App Rule for Docker resources
-  shell: "az network firewall application-rule create --collection-name App-Docker-Rules --firewall-name {{ azure_fw_name }} --name Allow-Docker --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *docker.io *docker.com --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 500 --action Allow"
-  ignore_errors: yes
+    - name: Create Azure Firewall App Rule for Github resources
+      shell: "az network firewall application-rule create --collection-name App-Github-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *github.com  --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 400 --action Allow"
+      ignore_errors: yes
+
+    - name: Create Azure Firewall App Rule for Docker resources
+      shell: "az network firewall application-rule create --collection-name App-Docker-Rules --firewall-name {{ azure_fw_name }} --name Allow-Docker --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *docker.io *docker.com --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 500 --action Allow"
+      ignore_errors: yes
+
+  when:
+    - mode == "private"
+
+# This is for simulate the AirGapped. Only the exit to the *azure.com for the Azure Resource Manager
+# can be allowed. No internet connection will be allowed at all.
+# TODO: test to schrink and delete *microsoft* and *windows* rules.
+- block:
+    - name: Create Azure Firewall App Rule for Microsoft resources
+      shell: "az network firewall application-rule create --collection-name App-Microsoft-Rules --firewall-name {{ azure_fw_name }} --name Allow-Microsoft --protocols Http=80 Https=443 --resource-group {{ azure_resource_group }} --target-fqdns *azure.com *microsoft.com *microsoftonline.com *windows.net --source-addresses {{ azure_subnet_compute }} {{ azure_subnet_controlplane }} --priority 200 --action Allow"
+      ignore_errors: yes
+
+  when:
+    - mode == "disconnected"

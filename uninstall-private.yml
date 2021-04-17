@@ -6,6 +6,8 @@
   vars_files:
     - vault/azure.yml
     - vars/vars-private.yml
+  collections:
+    - azure.azcollection
   tasks:
 
     - name: Get facts for one Public IP

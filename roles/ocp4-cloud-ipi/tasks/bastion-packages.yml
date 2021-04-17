@@ -11,12 +11,6 @@
      - epel-release
      - squid
      - python3-psutil
-
-- name: Ensure requirement are installed
-  yum:
-    name: "{{ packages }}"
-  vars:
-    packages:
      - python3-passlib
      - python3-bcrypt
 
