@@ -15,8 +15,8 @@ There are different approaches for each mode, but always an IPI installation is 
 ## 2. Installation Modes
 
 * [Connected Installation](/docs/mode-connected.md)
-* [Private Installation](/docs/mode-private.md)
-* [Disconnected Installation](/docs/mode-disconnected.md)
+* [Private/Restricted Installation](/docs/mode-private.md)
+* [Disconnected/AirGapped Installation](/docs/mode-disconnected.md)
 
 ## 3. Egress/Outbound modes
 
@@ -41,13 +41,13 @@ possibilities can be used for the Egress/Outbound mode
 
 By default NO egress/outbound is allowed to Internet because is a Disconnected environment
 
-* [Disconnected Egress](/docs/egress-disconnected.md)
+* [Airgapped/Disconnected Egress](/docs/egress-disconnected.md)
 
 ## 4. Ingress Modes
 
 * [Ingress in Public/Connected Mode](/docs/ingress-connected.md)
 * [Ingress in Private Mode](/docs/ingress-private.md)
-* [Ingress in Disconnected Mode](/docs/ingress-disconnected.md)
+* [Ingress in Airgapped/Disconnected Mode](/docs/ingress-disconnected.md)
 
 ## 5. Platforms Tested
 

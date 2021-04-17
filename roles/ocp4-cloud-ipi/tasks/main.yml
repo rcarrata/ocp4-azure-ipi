@@ -65,7 +65,7 @@
 ### Installation of the Openshift Cluster
 - block:
     - import_tasks: install.yml
-    #- import_tasks: print-info.yml
+    - import_tasks: print-info.yml
   when:
     - cloud == "azure"
     - action == "install"

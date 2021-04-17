@@ -14,7 +14,7 @@ for only internal traffic.
 
 The Azure User Account need to have the following roles for the subscription:
 
-* User Access Administrator
+* [User Access Administrator](https://github.com/openshift/installer/blob/master/docs/user/azure/credentials.md)
 
 ## [User-Defined Outbound Routing](https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-private.html#installation-azure-user-defined-routing_installing-azure-private)
 

@@ -118,7 +118,6 @@
     virtual_network: "{{ azure_vnet_name }}"
     route_table: "{{ azure_fw_rt }}"
 
-# Not add the bastion for avoiding to lock in.
 # TODO: Check the strategy, if there is valuable to go through the firewall
 #- name: Add subnet for bastion
 #  azure_rm_subnet:
