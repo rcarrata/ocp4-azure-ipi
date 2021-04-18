@@ -5,9 +5,7 @@
     name: "{{ azure_resource_group }}"
     location: "{{ azure_location }}"
 
-# TODO: Check if 443/80 and 22643 are needed during the Install
-# Assuming that 443/80 yes because they needed for the access to the Apps from outside of the VNet
-# (ExpressRoute, etc)
+# https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-private.html#installation-about-custom-azure-vnet-nsg-requirements_installing-azure-private
 - name: Create Network Security Group for OCP4
   azure_rm_securitygroup:
     resource_group: "{{ azure_vm_resource_group }}"
@@ -60,21 +58,48 @@
     name: "{{ azure_vnet_name }}"
     address_prefixes: "{{ azure_vnet_cidr }}"
 
-- name: Add subnet for control-plane
-  azure_rm_subnet:
-    resource_group: "{{ azure_resource_group }}"
-    name: control-plane
-    address_prefix: "{{ azure_subnet_controlplane }}"
-    virtual_network: "{{ azure_vnet_name }}"
-    security_group: "{{ azure_nsg_name }}"
+- block:
+    - name: Add subnet for control-plane
+      azure_rm_subnet:
+        resource_group: "{{ azure_resource_group }}"
+        name: control-plane
+        address_prefix: "{{ azure_subnet_controlplane }}"
+        virtual_network: "{{ azure_vnet_name }}"
+        security_group: "{{ azure_nsg_name }}"
 
-- name: Add subnet for compute
-  azure_rm_subnet:
-    resource_group: "{{ azure_resource_group }}"
-    name: compute
-    address_prefix: "{{ azure_subnet_compute }}"
-    virtual_network: "{{ azure_vnet_name }}"
-    security_group: "{{ azure_nsg_name }}"
+    - name: Add subnet for compute
+      azure_rm_subnet:
+        resource_group: "{{ azure_resource_group }}"
+        name: compute
+        address_prefix: "{{ azure_subnet_compute }}"
+        virtual_network: "{{ azure_vnet_name }}"
+        security_group: "{{ azure_nsg_name }}"
+  when:
+    - mode == "private"
+
+# To reach from the VNet to the Blog Container Storage where the Ignitions are
+- block:
+    - name: Add subnet for control-plane
+      azure_rm_subnet:
+        resource_group: "{{ azure_resource_group }}"
+        name: control-plane
+        address_prefix: "{{ azure_subnet_controlplane }}"
+        virtual_network: "{{ azure_vnet_name }}"
+        security_group: "{{ azure_nsg_name }}"
+        service_endpoints:
+          - service: "Microsoft.Storage"
+
+    - name: Add subnet for compute
+      azure_rm_subnet:
+        resource_group: "{{ azure_resource_group }}"
+        name: compute
+        address_prefix: "{{ azure_subnet_compute }}"
+        virtual_network: "{{ azure_vnet_name }}"
+        security_group: "{{ azure_nsg_name }}"
+        service_endpoints:
+          - service: "Microsoft.Storage"
+  when:
+    - mode == "disconnected"
 
 - name: Add subnet for bastion
   azure_rm_subnet:
@@ -120,9 +145,4 @@
   delay: 10
   until: result_link is not failed
 
-# TODO: Add the Security Groups?
-# https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-private.html#installation-about-custom-azure-vnet-nsg-requirements_installing-azure-private
-
-# TODO2: Adding Virtual Service Endpoint and AzureResourceManager to the Prereqs of the Airgapped
-# installation
 # TODO3: Adding the Inbound and Outbound from Masters and Workers to the Azure Service Manager API

@@ -6,6 +6,7 @@
   vars_files:
     - vault/azure.yml
     - vars/vars-disconnected.yml
+    - vars/vars-firewall.yml
   environment:
     AZURE_SUBSCRIPTION_ID: "{{ azure_subscription_id }}"
     AZURE_TENANT: "{{ azure_tenant }}"
@@ -24,6 +25,7 @@
   vars_files:
     - vault/azure.yml
     - vars/vars-disconnected.yml
+    - vars/vars-firewall.yml
   environment:
     AZURE_SUBSCRIPTION_ID: "{{ azure_subscription_id }}"
     AZURE_TENANT: "{{ azure_tenant }}"

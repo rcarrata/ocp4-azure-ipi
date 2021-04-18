@@ -12,7 +12,8 @@
      - squid
      - python3-psutil
 
-- name: Ensure requirement are installed
+# Split in two different yum, because needs the epel-release for be installed
+- name: Ensure Required Python Libs are installed
   yum:
     name: "{{ packages }}"
   vars:

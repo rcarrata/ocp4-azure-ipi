@@ -1,3 +1,14 @@
+## Prerequisites for Launch the OCP4 Azure IPI
+
+## Install Ansible and Azure Cli dependencies
+
+```
+virtualenv ansible-210
+source ansible-210/bin/activate
+pip install ansible==2.10
+pip install -r https://raw.githubusercontent.com/ansible-collections/azure/dev/requirements-azure.txt
+```
+
 First add the vault directory and the vault yaml:
 
 * Generate a Vault-File with the credentials of Azure and OCP4 PullSecret:

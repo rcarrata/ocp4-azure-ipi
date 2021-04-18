@@ -1,7 +1,7 @@
 ## Azure Disconnected Vars
 cloud: "azure"
 mode: "disconnected"
-egress: "none"
+egress: "firewall" # Restricted egress firewall only to management.azure.com
 ocp4_version: '4.7.2'
 ocp_img: "{{ ocp4_version }}"
 cluster_name: 'ocp4'

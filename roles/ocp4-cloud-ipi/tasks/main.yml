@@ -29,7 +29,7 @@
     - import_tasks: azure-infra-firewall.yml        # Adding the Azure Firewall
   when:
     - cloud == "azure"
-    - mode == "private"
+    - mode == "private" or mode == "disconnected"
     - egress == "firewall"
     - action == "provision-infra"
 

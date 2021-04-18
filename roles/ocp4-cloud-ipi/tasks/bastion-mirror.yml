@@ -48,6 +48,9 @@
     name: "{{ registry_url }}/{{ LOCAL_REPOSITORY }}:{{ OCP_RELEASE }}-operator-lifecycle-manager"
     auth_file: "{{ registry_custom_pull_secret_path }}"
 
+- name: Flush handlers
+  meta: flush_handlers
+
 - name: Check release info to make sure it works
   shell: 'oc adm release info -a {{ LOCAL_SECRET_JSON }} "{{ LOCAL_REGISTRY }}/{{ LOCAL_REPOSITORY }}:{{ OCP_RELEASE }}"'
   register: release_info
