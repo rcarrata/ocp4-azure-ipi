@@ -1,0 +1,4 @@
+# Azure firewall vars (only working if egress=firewall are set)
+azure_subnet_vpn_name: GatewaySubnet
+azure_subnet_vpn_cidr: 10.10.20.0/24
+azure_vpn_name: ocp4vpn

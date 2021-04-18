@@ -1,0 +1,28 @@
+---
+
+## Add the Vnets and Subnets for VPN
+
+- name: Add subnet network for the VPN
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_subnet_vpn_name }}"
+    address_prefix: "{{ azure_subnet_vpn_cidr }}"
+    virtual_network: "{{ azure_vnet_name }}"
+
+# TODO: not working due to: /providers/Microsoft.Network/publicIPAddresses/IPPUBLIC was not found
+- name: Create Virtual Private Network for connect to Azure Openshift4 Cluster
+  azure_rm_virtualnetworkgateway:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_vpn_name }}"
+    ip_configurations:
+      - name: ipconfig
+        private_ip_allocation_method: Dynamic
+        public_ip_address_name: ippublic
+        subnet: "{{ azure_subnet_vpn_name }}"
+    virtual_network: "{{ azure_vnet_name }}"
+    location: "{{ azure_location }}"
+    state: present
+    sku: VpnGw2
+
+az network vnet-gateway create -n VNet1GW -l eastus --public-ip-address VNet1GWIP -g TestRG1 --vnet VNet1 --gateway-type Vpn --sku VpnGw1 --vpn-type RouteBased --no-wait
+

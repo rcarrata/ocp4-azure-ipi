@@ -1,0 +1,10 @@
+- name: "[AZURE-PRIVATE] Add Azure Firewall in Private or Disconnected Mode"
+  hosts: localhost
+  gather_facts: yes
+  vars_files:
+    - vault/azure.yml
+    - vars/vars-private.yml
+    - vars/vars-vpn.yml
+  tasks:
+    - name: Install Azure Infra Firewall
+      include_tasks: roles/ocp4-cloud-ipi/tasks/azure-infra-vpn.yml
