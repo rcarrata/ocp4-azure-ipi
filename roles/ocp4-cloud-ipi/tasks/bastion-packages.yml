@@ -11,6 +11,13 @@
      - epel-release
      - squid
      - python3-psutil
+
+# Split in two different yum, because needs the epel-release for be installed
+- name: Ensure Required Python Libs are installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
      - python3-passlib
      - python3-bcrypt
 
