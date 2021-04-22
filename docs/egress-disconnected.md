@@ -4,19 +4,18 @@
 
 Not Full AirGapped is possible with IPI mode.
 
-The issue is that inside of the VNet, the
-Machine-Config-Operator is not able to reach the API of the Azure Resource Manager through an
-internal IP or DNS, because it's ONLY available in a Public IP / DNS resolution.
+ <img align="center" width="750" src="pics/egress_azure_disconnected2.png">
 
-To be Documented
+The issue is that inside of the VNet, the Machine-Config-Operator is not able to reach the API of the Azure Resource Manager through an internal IP or DNS, because it's ONLY available in a Public IP / DNS resolution.
+Not a [Virtual Private Endpoint](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview) is available for this internal VNET <-> Azure Resource Manager connection
+
 
 ## Openshift UPI Mode
 
- <img align="center" width="750" src="pics/egress_azure_disconnected.png">
+<img align="center" width="750" src="pics/egress_azure_disconnected.png">
 
 * NOTE: No MachineSet are allowed in this mode. The issue is that inside of the VNet, the
   Machine-Config-Operator is not able to reach the API of the Azure Resource Manager through an
   internal IP or DNS, because it's ONLY available in a Public IP / DNS resolution.
 
-  Not a [Virtual Private Endpoint](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview) is available for this internal VNET <-> Azure Resource Manager
-  connection
+Not a [Virtual Private Endpoint](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview) is available for this internal VNET <-> Azure Resource Manager connection

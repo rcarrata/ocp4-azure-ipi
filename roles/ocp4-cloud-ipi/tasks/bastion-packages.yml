@@ -20,6 +20,7 @@
     packages:
      - python3-passlib
      - python3-bcrypt
+     - bind-utils
 
 # The squid is only needed in private installations for acting as a proxy
 - name: Enable and start squid
