@@ -3,6 +3,7 @@
 ## Install Ansible and Azure Cli dependencies
 
 ```
+pip indysll virtualenv
 virtualenv ansible-210
 source ansible-210/bin/activate
 pip install ansible==2.10
@@ -36,8 +37,4 @@ touch .vault-password-file
 echo "yourpasswordfancy" >> .vault-password-file
 ```
 
-* Opt: Install the collection requirements
-
-```
-ansible-galaxy collection install -r collections/requirements.yml
-```
+* Choose the installation mode that you like and enjoy!
