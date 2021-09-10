@@ -2,7 +2,7 @@
 cloud: "azure"
 mode: "private"
 egress: "proxy" # By Default use the Proxy but be can overwrite
-ocp4_version: '4.7.2'
+ocp4_version: '4.8.10'
 ocp_img: "{{ ocp4_version }}"
 cluster_name: 'ocp4'
 ocp_base_domain_name: "{{ azure_dns_zone }}"

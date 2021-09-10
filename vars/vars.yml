@@ -1,7 +1,7 @@
 ## Azure Connected Vars
 cloud: "azure"
 mode: "public"
-ocp4_version: '4.7.5'
+ocp4_version: '4.8.10'
 cluster_name: 'ocp4'
 ocp_base_domain_name: "{{ azure_dns_zone }}"
 ocp_machine_cidr: "{{ azure_vnet_cidr }}"
