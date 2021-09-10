@@ -2,8 +2,9 @@
 
 - name: '[PRINT-INFO] Get ClusterVersion'
   pause:
-    minutes: 5
+    minutes: 1
 
+# TODO: Add the installation of the kubernetes
 - name: '[PRINT-INFO] Get ClusterVersion'
   k8s_info:
     kubeconfig: "{{ local_kubeconfig }}"

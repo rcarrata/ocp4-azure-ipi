@@ -42,6 +42,14 @@
     - certs
     - data
 
+- name: Install Kubernetes package with pip
+  command: "pip3 install {{ item }}"
+  when:
+    - mode == "private" or mode == "disconnected"
+  loop:
+    - kubernetes
+    - openshift
+
 - block:
     ## Certificates
     - name: Generate an OpenSSL private key.
