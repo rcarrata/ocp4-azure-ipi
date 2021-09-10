@@ -1,11 +1,43 @@
 ## Prerequisites for Launch the OCP4 Azure IPI
 
+## Install Azure CLI and configure your account
+
+Follow the [Installation Guide for Azure CLI](https://docs.microsoft.com/es-es/cli/azure/install-azure-cli)
+
+```
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+echo -e "[azure-cli]
+name=Azure CLI
+baseurl=https://packages.microsoft.com/yumrepos/azure-cli
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo
+
+sudo dnf install azure-cli
+```
+
+```
+az login
+```
+
+## Configure your Azure Account for Openshift Installer
+
+* Fill and create the Azure Creds for the Service Principal inherit by the Openshift Installer
+
+```
+cat ~/.azure/osServicePrincipal.json
+{"subscriptionId":"xxxx","clientId":"xxxx","clientSecret":"xxxx","tenantId":"xxxx"}
+```
+
 ## Install Ansible and Azure Cli dependencies
 
 ```
+pip install virtualenv
 virtualenv ansible-210
 source ansible-210/bin/activate
 pip install ansible==2.10
+pip install selinux
 pip install -r https://raw.githubusercontent.com/ansible-collections/azure/dev/requirements-azure.txt
 ```
 
@@ -36,8 +68,4 @@ touch .vault-password-file
 echo "yourpasswordfancy" >> .vault-password-file
 ```
 
-* Opt: Install the collection requirements
-
-```
-ansible-galaxy collection install -r collections/requirements.yml
-```
+* Choose the installation mode that you like and enjoy!
