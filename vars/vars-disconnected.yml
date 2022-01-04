@@ -2,7 +2,7 @@
 cloud: "azure"
 mode: "disconnected"
 egress: "firewall" # Restricted egress firewall only to management.azure.com
-ocp4_version: '4.8.10'
+ocp4_version: '4.9.11'
 ocp_img: "{{ ocp4_version }}"
 cluster_name: 'ocp4'
 ocp_base_domain_name: "{{ azure_dns_zone }}"

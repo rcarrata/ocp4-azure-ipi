@@ -1,7 +1,7 @@
-# IPI Installation - Mode Disconnected (Under Reconstruction)
+# IPI Installation - Mode Disconnected
 
-This is the AirGapped mode with no public Internet connectivity from the cluster is allowed. 
-Mirrored Images in Bastion are needed and used for the installation of Openshift Cluster as well as the several operators.
+This is the AirGapped mode with no public Internet connectivity from the cluster is allowed.
+Mirrored Images in Bastion are needed and used for the installation of OpenShift Cluster as well as the several operators.
 
 ## Fill the vars
 
@@ -19,7 +19,7 @@ ansible-playbook install-disconnected.yml --vault-password-file .vault-file-pass
 
 ## Diagram for Disconnected Mode (Ongoing)
 
-This is the possible scenario that supports full disconected (and almost full airgapped) installation of Openshift4.
+This is the possible scenario that supports full disconnected (and almost full airgapped) installation of OpenShift 4.
 
 <img align="center" width="750" src="pics/egress_azure_disconnected2.png">
 
@@ -39,7 +39,7 @@ The following items are not required or created when you install a private clust
 
 OutboundMode is forced to be "User-Defined Outbound Routing"
 
-```
+```sh
 outboundType: UserDefinedRouting
 ```
 
