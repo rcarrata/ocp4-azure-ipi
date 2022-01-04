@@ -7,13 +7,13 @@ Mirrored Images in Bastion are needed and used for the installation of OpenShift
 
 * Edit the vars-private.yml and customize to fill your needs:
 
-```
+```sh
 vim vars/vars-disconnected.yml
 ```
 
 ## Execute the installation
 
-```
+```sh
 ansible-playbook install-disconnected.yml --vault-password-file .vault-file-password
 ```
 

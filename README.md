@@ -1,6 +1,6 @@
-# Openshift 4 Azure IPI installation
+# OpenShift 4 Azure IPI installation
 
-Ansible Repository for deploy Openshift 4 clusters with IPI installation in connected, private and disconnected mode
+Ansible Repository for deploy OpenShift 4 clusters with IPI installation in connected, private and disconnected mode
 
 There are different approaches for each mode, but always an IPI installation is used.
 
@@ -20,14 +20,14 @@ There are different approaches for each mode, but always an IPI installation is 
 
 ## 3. Egress/Outbound modes
 
-### 3.1 Connected/Public Openshift cluster Egress/Outbound mode
+### 3.1 Connected/Public OpenShift cluster Egress/Outbound mode
 
 By default in the Connected/Public Clusters the Egress / Outbound connections to Internet is
 performed using the LoadBalancer Egress mode:
 
 * [Default with LoadBalancer](/docs/egress-default.md)
 
-### 3.2 Private/Restricted Openshift cluster Egress/Outbound mode
+### 3.2 Private/Restricted OpenShift cluster Egress/Outbound mode
 
 By default in the Private / Public Clusters the OutboundType is LoadBalancer, but other
 possibilities can be used for the Egress/Outbound mode
@@ -37,7 +37,7 @@ possibilities can be used for the Egress/Outbound mode
 * [Azure Firewall](/docs/egress-firewall.md)
 * [Nat Gateway](/docs/egress-nat.md)
 
-### 3.3 Disconnected/Air Gapped Openshift Cluster Egress/Outbound mode
+### 3.3 Disconnected/Air Gapped OpenShift Cluster Egress/Outbound mode
 
 By default NO egress/outbound is allowed to Internet because is a Disconnected environment
 
