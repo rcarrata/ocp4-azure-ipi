@@ -37,7 +37,7 @@ possibilities can be used for the Egress/Outbound mode
 * [Azure Firewall](/docs/egress-firewall.md)
 * [Nat Gateway](/docs/egress-nat.md)
 
-### 3.3 Disconnected/Air Gapped OpenShift Cluster Egress/Outbound mode
+### 3.3 Disconnected/Air Gapped Openshift Cluster Egress/Outbound mode
 
 By default NO egress/outbound is allowed to Internet because is a Disconnected environment
 

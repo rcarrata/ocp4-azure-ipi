@@ -38,7 +38,8 @@ virtualenv ansible-210
 source ansible-210/bin/activate
 pip install ansible==2.10
 pip install selinux
-pip install -r https://raw.githubusercontent.com/ansible-collections/azure/dev/requirements-azure.txt
+ansible-galaxy collection install azure.azcollection
+pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
 ```
 
 First add the vault directory and the vault yaml:
