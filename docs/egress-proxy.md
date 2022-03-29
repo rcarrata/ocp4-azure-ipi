@@ -1,6 +1,6 @@
-# Egress Mode - Azure Proxy
+# Egress Mode - Egress Proxy
 
-## 1 Install and Configure Azure Firewall with Ansible (recommended)
+## 1 Install and Configure Egress Proxy outbound mode with Ansible (recommended)
 
 ```
 ansible-playbook install-private.yml -e "egress=proxy" --vault-password-file .vault-file-password
@@ -8,7 +8,7 @@ ansible-playbook install-private.yml -e "egress=proxy" --vault-password-file .va
 
 ## 1.2 Checking the Azure Proxy connectivity
 
-* [Check Firewall](/docs/check_firewall.md)
+* [Check Proxy](/docs/check_proxy.md)
 
 ## 1.3 Connect to the Private Cluster
 
