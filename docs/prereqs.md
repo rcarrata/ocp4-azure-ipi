@@ -21,7 +21,7 @@ sudo dnf install azure-cli
 az login
 ```
 
-## Configure your Azure Account for Openshift Installer
+## Configure your Azure Account for OpenShift Installer
 
 * Fill and create the Azure Creds for the Service Principal inherit by the Openshift Installer
 
