@@ -1,5 +1,12 @@
 ---
 
+##### Checking that prerequisites are satisfied
+- block:
+    - import_tasks: check-prereqs.yml
+  when:
+    - cloud == "azure"
+    - action == "provision-infra"
+
 ##### Tasks for a IPI CONNECTED Installation
 - block:
     - import_tasks: azure-infra.yml

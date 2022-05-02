@@ -69,4 +69,10 @@ touch .vault-password-file
 echo "yourpasswordfancy" >> .vault-password-file
 ```
 
+* Add SSH key on vault folder
+```
+cp YOURPUBKEY vault/ssh-key.pub
+cp YOURPRIVKEY vault/ssh-key
+```
+
 * Choose the installation mode that you like and enjoy!
