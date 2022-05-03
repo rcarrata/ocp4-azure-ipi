@@ -39,6 +39,11 @@ azure_vm_subnet: bastion
 azure_vm_admin_username: az-admin
 azure_vm_admin_key_path: "vault/ssh-key"
 azure_vm_admin_pub_key: "{{ lookup('file', 'vault/ssh-key.pub') }}"
+azure_vm_image_offer: CentOS
+azure_vm_image_publisher: OpenLogic
+azure_vm_image_sku: 8.0
+azure_vm_image_version: latest
+azure_vm_image_no_log: true
 
 # Bastion Registry parameters
 registry_user: registry

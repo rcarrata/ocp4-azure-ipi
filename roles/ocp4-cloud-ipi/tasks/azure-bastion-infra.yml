@@ -11,7 +11,6 @@
         access: Allow
         priority: 1001
         direction: Inbound
-        direction: Inbound
       - name: Registry
         protocol: Tcp
         destination_port_range: 5000
@@ -34,11 +33,11 @@
     public_ip_allocation_method: Dynamic
     ssh_password_enabled: false
     image:
-      offer: CentOS
-      publisher: OpenLogic
-      sku: 8.0
-      version: latest
-      no_log: true
+      offer: "{{ azure_vm_image_offer }}"
+      publisher: "{{ azure_vm_image_publisher }}"
+      sku: "{{ azure_vm_image_sku }}"
+      version: "{{ azure_vm_image_version }}"
+      no_log: "{{ azure_vm_image_no_log }}"
   register: output
 
 - name: Get IP
