@@ -38,6 +38,11 @@
       sku: "{{ azure_vm_image_sku }}"
       version: "{{ azure_vm_image_version }}"
       no_log: "{{ azure_vm_image_no_log }}"
+    tags:
+      type: "bastion"
+      cluster_name: "{{ cluster_name }}"
+      #TODO: expose RG in input if specified
+      #cluster_resource_group: "{{ cluster_resource_group }}"
   register: output
 
 - name: Get IP
