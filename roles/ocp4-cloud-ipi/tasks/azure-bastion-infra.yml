@@ -22,7 +22,7 @@
   azure_rm_virtualmachine:
     resource_group: "{{ azure_vm_resource_group }}"
     name: "{{ azure_vm_name }}"
-    vm_size: Standard_B1s
+    vm_size: "{{ azure_vm_size }}"
     admin_username: "{{ azure_vm_admin_username }}"
     ssh_public_keys:
       - key_data: "{{ azure_vm_admin_pub_key }}"
@@ -32,6 +32,8 @@
     subnet_name: "{{ azure_vm_subnet }}"
     public_ip_allocation_method: Dynamic
     ssh_password_enabled: false
+    managed_disk_type: Standard_LRS
+    os_disk_size_gb: "{{ azure_vm_os_disk_size_gb }}"
     image:
       offer: "{{ azure_vm_image_offer }}"
       publisher: "{{ azure_vm_image_publisher }}"

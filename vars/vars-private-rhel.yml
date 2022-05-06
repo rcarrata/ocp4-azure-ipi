@@ -1,0 +1,19 @@
+## Azure Connected Vars
+ocp4_version: '4.10.11'
+cluster_name: 'ocp4'
+
+# Azure parameters
+#azure_resource_group: adecorte-rhel-rg
+#azure_location: westeurope
+
+egress: "LoadBalancer"
+azure_outboundtype: "Loadbalancer"
+
+# https://access.redhat.com/articles/product-configuration-for-azure
+# but A2_v2 doesn't support gen2, so go with B2s
+azure_vm_size: Standard_B2s
+azure_vm_os_disk_size_gb: 490
+azure_vm_image_offer: RHEL
+azure_vm_image_publisher: RedHat
+azure_vm_image_sku: "8-lvm-gen2"
+azure_vm_image_version: latest

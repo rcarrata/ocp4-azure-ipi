@@ -34,6 +34,8 @@ azure_outboundtype: "UserDefinedRouting"
 
 # Azure vm parameters
 azure_vm_name: bastion
+azure_vm_size: Standard_B1s
+azure_vm_os_disk_size_gb: 64
 azure_vm_resource_group: "{{ azure_resource_group }}"
 azure_vm_resource_group_vnet: "{{ azure_resource_group }}"
 azure_vm_subnet: bastion
