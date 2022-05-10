@@ -11,12 +11,21 @@
         access: Allow
         priority: 1001
         direction: Inbound
+
+- name: Create Network Security Group that allows access to internal registry
+  azure_rm_securitygroup:
+    resource_group: "{{ azure_vm_resource_group }}"
+    name: "{{ azure_vm_name }}-disconnected"
+    rules:
       - name: Registry
         protocol: Tcp
         destination_port_range: 5000
         access: Allow
         priority: 1002
         direction: Inbound
+  when:
+    - cloud == "azure"
+    - mode == "disconnected"
 
 - name: Create VM
   azure_rm_virtualmachine:

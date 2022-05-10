@@ -9,7 +9,7 @@ cluster_name: 'ocp4'
 
 skip_provider: true
 
-egress: "LoadBalancer"
+egress: "Loadbalancer"
 azure_outboundtype: "Loadbalancer"
 
 # https://access.redhat.com/articles/product-configuration-for-azure

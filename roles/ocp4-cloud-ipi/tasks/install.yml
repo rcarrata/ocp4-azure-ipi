@@ -34,7 +34,7 @@
   when:
     - local_kubeconfig is defined
 
-- name: '[INSTALL_CONFIG] Copy the Kubeconfig to the know location'
+- name: '[INSTALL_CONFIG] Copy the Kubeconfig to the known location'
   copy:
     src: "{{ user_path }}/auth/kubeconfig"
     dest: "~/.kube/config"
