@@ -4,7 +4,10 @@ cluster_name: 'ocp4'
 
 # Azure parameters
 #azure_resource_group: adecorte-rhel-rg
+#azure_cluster_resource_group: adecorte-cluster-rhel-rg
 #azure_location: westeurope
+
+skip_provider: true
 
 egress: "LoadBalancer"
 azure_outboundtype: "Loadbalancer"

@@ -4,6 +4,8 @@
   shell:
     cmd: "{{ user_path }}/openshift-install create cluster --dir {{ user_path }} --log-level debug"
     creates: "{{ user_path }}/auth"
+  environment:
+    ARM_SKIP_PROVIDER_REGISTRATION: "{{ skip_provider | default(false) | bool | lower }}"
 
 - name: '[INSTALL_CONFIG] Check pid of openshift-install'
   pids:

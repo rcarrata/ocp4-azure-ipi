@@ -42,6 +42,9 @@ platform:
     region: {{ azure_location }}
     baseDomainResourceGroupName: {{ azure_resource_group }}
     networkResourceGroupName: {{ azure_resource_group }}
+{% if azure_cluster_resource_group is defined %}
+    resourceGroupName: {{ azure_cluster_resource_group }}
+{% endif %}
     virtualNetwork: {{ azure_vnet_name }}
     controlPlaneSubnet: control-plane
     computeSubnet: compute

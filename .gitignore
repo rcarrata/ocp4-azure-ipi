@@ -4,3 +4,7 @@ vault/azure.yml
 vault/ssh-key.pub
 vault/ssh-key
 .vscode/
+
+.history
+*/**/.history
+
