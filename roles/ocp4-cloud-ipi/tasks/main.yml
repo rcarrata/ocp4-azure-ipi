@@ -40,6 +40,15 @@
     - egress == "firewall"
     - action == "provision-infra"
 
+### Adding the Azure Private only for Private Installs and Egress Modes Azure NAT Gateway
+- block:
+    - import_tasks: azure-infra-nat-gateway.yml        # Adding the Azure NAT Gateway
+  when:
+    - cloud == "azure"
+    - mode == "private" or mode == "disconnected"
+    - egress == "natgateway"
+    - action == "provision-infra"
+
 ### Private/Disconnected Azure Login/Creds and Bastion Packages
 - block:
     - import_tasks: bastion-azure-login.yml

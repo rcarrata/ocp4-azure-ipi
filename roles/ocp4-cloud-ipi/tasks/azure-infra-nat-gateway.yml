@@ -1,0 +1,24 @@
+---
+
+# Based on: https://docs.microsoft.com/en-us/azure/virtual-network/nat-gateway/quickstart-create-nat-gateway-cli
+## Create PIP for NAT Gateway
+# TODO: check the sku standard that could be deprecated in the future
+- name: Create a public ip address for NAT Gateway
+  azure_rm_publicipaddress:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_natgateway_pip_name }}"
+    allocation_method: static
+    sku: standard
+  register: natgateway_pip
+
+## Create Azure NAT Gateway
+# TODO: replace with Ansible module when available
+- name: Create Azure NAT Gateway
+  shell: "az network nat gateway create --resource-group {{ azure_resource_group }} --name {{ azure_natgateway_name }} --public-ip-addresses {{ azure_natgateway_pip_name }}"
+
+## Associate Azure NAT Gateway with subnets
+# TODO: replace with Ansible module when available
+- name: Associate NAT Gateway to the compute subnet
+  shell: "az network vnet subnet update --resource-group {{ azure_resource_group }} --vnet-name {{ azure_vnet_name }} --name \"compute\" --nat-gateway {{ azure_natgateway_name }}"
+- name: Associate NAT Gateway to the control-plane subnet
+  shell: "az network vnet subnet update --resource-group {{ azure_resource_group }} --vnet-name {{ azure_vnet_name }} --name \"control-plane\" --nat-gateway {{ azure_natgateway_name }}"
