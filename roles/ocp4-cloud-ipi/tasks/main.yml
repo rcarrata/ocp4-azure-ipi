@@ -1,5 +1,13 @@
 ---
 
+##### Configure the prerequisites when running from AAP
+- block:
+    - import_tasks: handle-prereqs.yml
+  when:
+    - cloud == "azure"
+    - action == "provision-infra"
+    - private_ssh_key is defined
+
 ##### Checking that prerequisites are satisfied
 - block:
     - import_tasks: check-prereqs.yml

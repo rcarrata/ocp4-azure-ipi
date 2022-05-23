@@ -4,21 +4,94 @@
 ## Create PIP for NAT Gateway
 # TODO: check the sku standard that could be deprecated in the future
 - name: Create a public ip address for NAT Gateway
-  azure_rm_publicipaddress:
+  azure.azcollection.azure_rm_publicipaddress:
     resource_group: "{{ azure_resource_group }}"
     name: "{{ azure_natgateway_pip_name }}"
     allocation_method: static
     sku: standard
   register: natgateway_pip
 
-## Create Azure NAT Gateway
-# TODO: replace with Ansible module when available
-- name: Create Azure NAT Gateway
-  shell: "az network nat gateway create --resource-group {{ azure_resource_group }} --name {{ azure_natgateway_name }} --public-ip-addresses {{ azure_natgateway_pip_name }}"
+- name: Get facts for one Public IP
+  azure.azcollection.azure_rm_publicipaddress_info:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_natgateway_pip_name }}"
+  register: natgateway_pip_info
 
-## Associate Azure NAT Gateway with subnets
-# TODO: replace with Ansible module when available
+# https://management.azure.com/subscriptions/subid/resourceGroups/rg1/providers/Microsoft.Network/natGateways/test-natgateway?api-version=2021-08-01
+# https://docs.microsoft.com/en-us/rest/api/virtualnetwork/nat-gateways/create-or-update
+#
+- name: Create Azure NAT Gateway
+  azure.azcollection.azure_rm_resource:
+    api_version: "2021-08-01"
+    resource_group: "{{ azure_resource_group }}"
+    provider: network
+    resource_type: natGateways
+    resource_name: "{{ azure_natgateway_name }}"
+    body:
+      location: "{{ natgateway_pip_info.publicipaddresses[0].location }}"
+      sku:
+        name: "Standard"
+      properties:
+        publicIpAddresses:
+          - id: "{{ natgateway_pip_info.publicipaddresses[0].id }}"
+  register: natgateway
+
+- name: Get the compute subnet info
+  azure.azcollection.azure_rm_subnet_info:
+    resource_group: "{{ azure_resource_group }}"
+    virtual_network_name: "{{ azure_vnet_name }}"
+    name: "compute"
+  register: subnet_compute
+
+- name: Get the control-plane subnet info
+  azure.azcollection.azure_rm_subnet_info:
+    resource_group: "{{ azure_resource_group }}"
+    virtual_network_name: "{{ azure_vnet_name }}"
+    name: "control-plane"
+  register: subnet_control_plane
+
+# Example:
+# https://management.azure.com/subscriptions/subid/resourceGroups/subnet-test/providers/Microsoft.Network/virtualNetworks/vnetname/subnets/subnet1?api-version=2021-08-01
+# https://docs.microsoft.com/en-us/rest/api/virtualnetwork/subnets/create-or-update
+#
 - name: Associate NAT Gateway to the compute subnet
-  shell: "az network vnet subnet update --resource-group {{ azure_resource_group }} --vnet-name {{ azure_vnet_name }} --name \"compute\" --nat-gateway {{ azure_natgateway_name }}"
+  azure.azcollection.azure_rm_resource:
+    api_version: "2021-08-01"
+    resource_group: "{{ azure_resource_group }}"
+    provider: network
+    resource_type: virtualNetworks
+    resource_name: "{{ azure_vnet_name }}"
+    subresource:
+      - type: subnets
+        name: "compute"
+    body:
+      name: "compute"
+      location: "{{ natgateway_pip_info.publicipaddresses[0].location }}"
+      properties:
+        addressPrefix: "{{ subnet.address_prefix_cidr }}"
+        addressPrefixes: "{{ subnet.address_prefixes_cidr }}"
+        natGateway:
+          id: "{{ natgateway.response.id }}"
+  vars:
+    subnet: "{{ subnet_compute.subnets | first }}"
+
 - name: Associate NAT Gateway to the control-plane subnet
-  shell: "az network vnet subnet update --resource-group {{ azure_resource_group }} --vnet-name {{ azure_vnet_name }} --name \"control-plane\" --nat-gateway {{ azure_natgateway_name }}"
+  azure.azcollection.azure_rm_resource:
+    api_version: "2021-08-01"
+    resource_group: "{{ azure_resource_group }}"
+    provider: network
+    resource_type: virtualNetworks
+    resource_name: "{{ azure_vnet_name }}"
+    subresource:
+      - type: subnets
+        name: "control-plane"
+    body:
+      name: "control-plane"
+      location: "{{ natgateway_pip_info.publicipaddresses[0].location }}"
+      properties:
+        addressPrefix: "{{ subnet.address_prefix_cidr }}"
+        addressPrefixes: "{{ subnet.address_prefixes_cidr }}"
+        natGateway: 
+          id: "{{ natgateway.response.id }}"
+  vars:
+    subnet: "{{ subnet_control_plane.subnets | first }}"

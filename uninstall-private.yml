@@ -3,11 +3,15 @@
 - name: "[AZURE-PRIVATE] Destroy Azure Openshift Cluster in Private Mode"
   hosts: localhost
   gather_facts: yes
-  vars_files:
-    - vault/azure.yml
-    - vars/vars-private.yml
+  vars:
+    vars_files_list:
+      - vault/azure.yml
+      - vars/vars-private.yml
   tasks:
-
+    - name: Include vars_files
+      include_vars: "{{ item }}"
+      when: item is file
+      loop: "{{ vars_files_list }}"
     - name: Get facts for one Public IP
       azure_rm_publicipaddress_info:
         resource_group: "{{ azure_resource_group }}"
@@ -20,6 +24,10 @@
     - name: Get IP
       set_fact:
         azure_vm_public_ip: "{{ output.publicipaddresses.0.ip_address }}"
+
+    - name: Handle private keys check
+      include_tasks: roles/ocp4-cloud-ipi/tasks/handle-prereqs.yml
+      when: private_ssh_key is defined
 
     - name: Add azure vm into host
       add_host:
@@ -42,20 +50,30 @@
 - name: "[AZURE-PRIVATE] Delete Azure Openshift Cluster"
   hosts: inv
   become: true
-  vars_files:
-    - vault/azure.yml
-    - vars/vars-private.yml
+  vars:
+    vars_files_list:
+      - vault/azure.yml
+      - vars/vars-private.yml
   tasks:
+    - name: Include vars_files
+      include_vars: "{{ item }}"
+      when: item is file
+      loop: "{{ vars_files_list }}"
     - name: Delete the Openshift Cluster
       include_tasks: roles/ocp4-cloud-ipi/tasks/uninstall.yml
 
 - name: "[AZURE-PRIVATE] Destroy Azure Openshift Cluster in Private Mode"
   hosts: localhost
   gather_facts: yes
-  vars_files:
-    - vault/azure.yml
-    - vars/vars-private.yml
+  vars:
+    vars_files_list:
+      - vault/azure.yml
+      - vars/vars-private.yml
   tasks:
+    - name: Include vars_files
+      include_vars: "{{ item }}"
+      when: item is file
+      loop: "{{ vars_files_list }}"
     - name: Destroy Resource Group of Openshift
       include_tasks: roles/ocp4-cloud-ipi/tasks/azure-infra-destroy.yml
 
