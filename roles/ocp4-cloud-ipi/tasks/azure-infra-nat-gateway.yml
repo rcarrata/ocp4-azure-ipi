@@ -72,6 +72,8 @@
         addressPrefixes: "{{ subnet.address_prefixes_cidr }}"
         natGateway:
           id: "{{ natgateway.response.id }}"
+        # This is needed until https://azure.microsoft.com/en-us/updates/public-preview-of-private-link-network-security-group-support/ goes GA
+        privateLinkServiceNetworkPolicies: "Disabled"
   vars:
     subnet: "{{ subnet_compute.subnets | first }}"
 
@@ -93,5 +95,7 @@
         addressPrefixes: "{{ subnet.address_prefixes_cidr }}"
         natGateway: 
           id: "{{ natgateway.response.id }}"
+        # This is needed until https://azure.microsoft.com/en-us/updates/public-preview-of-private-link-network-security-group-support/ goes GA
+        privateLinkServiceNetworkPolicies: "Disabled"
   vars:
     subnet: "{{ subnet_control_plane.subnets | first }}"
