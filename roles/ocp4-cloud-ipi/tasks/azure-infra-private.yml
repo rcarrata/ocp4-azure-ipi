@@ -66,6 +66,8 @@
         address_prefix: "{{ azure_subnet_controlplane }}"
         virtual_network: "{{ azure_vnet_name }}"
         security_group: "{{ azure_nsg_name }}"
+        # This is needed until https://azure.microsoft.com/en-us/updates/public-preview-of-private-link-network-security-group-support/ goes GA
+        private_link_service_network_policies: "Disabled"
 
     - name: Add subnet for compute
       azure_rm_subnet:
@@ -74,6 +76,8 @@
         address_prefix: "{{ azure_subnet_compute }}"
         virtual_network: "{{ azure_vnet_name }}"
         security_group: "{{ azure_nsg_name }}"
+        # This is needed until https://azure.microsoft.com/en-us/updates/public-preview-of-private-link-network-security-group-support/ goes GA
+        private_link_service_network_policies: "Disabled"
   when:
     - mode == "private"
 
