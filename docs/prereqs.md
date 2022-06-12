@@ -66,7 +66,7 @@ ocp4_pull_secret: '<<< pull_secret_azure >>>'
 
 ```
 touch .vault-password-file
-echo "yourpasswordfancy" >> .vault-password-file
+echo "yourpasswordfancy" >> .vault-file-password
 ```
 
 * Choose the installation mode that you like and enjoy!
