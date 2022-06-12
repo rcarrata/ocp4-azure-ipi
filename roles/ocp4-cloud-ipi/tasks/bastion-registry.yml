@@ -59,7 +59,7 @@
   command: "podman tag registry.access.redhat.com/ubi7/ubi:7.7 {{ registry_url }}/ubi7/ubi:7.7"
 
 - name: Test registry functionality pushing the ubi7 to the new registry
-  command: "podman push {{ registry_url }}/ubi7/ubi:7.7"
+  command: "podman push --remove-signatures {{ registry_url }}/ubi7/ubi:7.7"
 
 - name: Test to ensure registry is accessible
   uri:
