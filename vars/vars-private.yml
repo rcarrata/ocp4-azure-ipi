@@ -34,12 +34,19 @@ azure_outboundtype: "UserDefinedRouting"
 
 # Azure vm parameters
 azure_vm_name: bastion
+azure_vm_size: Standard_B1s
+azure_vm_os_disk_size_gb: 64
 azure_vm_resource_group: "{{ azure_resource_group }}"
 azure_vm_resource_group_vnet: "{{ azure_resource_group }}"
 azure_vm_subnet: bastion
 azure_vm_admin_username: az-admin
 azure_vm_admin_key_path: "vault/ssh-key"
 azure_vm_admin_pub_key: "{{ lookup('file', 'vault/ssh-key.pub') }}"
+azure_vm_image_offer: CentOS
+azure_vm_image_publisher: OpenLogic
+azure_vm_image_sku: 8.0
+azure_vm_image_version: latest
+azure_vm_image_no_log: true
 
 ## TODO: Not used in Private Mode. Check if I can delete them.
 # Bastion Registry parameters

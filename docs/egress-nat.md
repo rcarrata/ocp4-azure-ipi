@@ -2,7 +2,9 @@
 
 ## 1 Install and Configure Azure with Nat Gateway as Egress Outbound
 
-TODO
+```
+ansible-playbook install-private.yml -e "egress=natgateway" -e "azure_outboundtype=UserDefinedRouting" --vault-password-file .vault-file-password
+```
 
 ## 1.2 Checking the Azure Firewall
 

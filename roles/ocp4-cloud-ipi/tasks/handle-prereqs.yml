@@ -1,0 +1,23 @@
+---
+# Support deploying from Ansible Automation Platform
+# define the key pairs via environment variables
+# explicit reference the template files
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/vault"
+    state: directory
+    mode: '0755'
+
+- name: Create ssh key from vars
+  delegate_to: localhost
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/roles/ocp4-cloud-ipi/templates/private_ssh_key.j2"
+    dest: "{{ playbook_dir }}/vault/ssh-key"
+    mode: '0600'
+
+- name: Create ssh key pub from vars
+  delegate_to: localhost
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/roles/ocp4-cloud-ipi/templates/public_ssh_key.j2"
+    dest: "{{ playbook_dir }}/vault/ssh-key.pub"

@@ -8,9 +8,17 @@
     packages:
      - podman
      - httpd-tools
-     - epel-release
      - squid
      - python3-psutil
+
+## Packages
+- name: Ensure requirement are installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+     - epel-release
+  when: azure_vm_image_offer == "CentOS"
 
 # Split in two different yum, because needs the epel-release for be installed
 - name: Ensure Required Python Libs are installed
@@ -21,6 +29,7 @@
      - python3-passlib
      - python3-bcrypt
      - bind-utils
+  when: azure_vm_image_offer == "CentOS"
 
 # The squid is only needed in private installations for acting as a proxy
 - name: Enable and start squid

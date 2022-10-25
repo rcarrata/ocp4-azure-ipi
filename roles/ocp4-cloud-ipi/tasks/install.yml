@@ -4,6 +4,8 @@
   shell:
     cmd: "{{ user_path }}/openshift-install create cluster --dir {{ user_path }} --log-level debug"
     creates: "{{ user_path }}/auth"
+  environment:
+    ARM_SKIP_PROVIDER_REGISTRATION: "{{ skip_provider | default(false) | bool | lower }}"
 
 - name: '[INSTALL_CONFIG] Check pid of openshift-install'
   pids:
@@ -19,10 +21,12 @@
 - name: '[INSTALL_CONFIG] Wait for the Bootstrap'
   shell:
     cmd: "{{ user_path }}/openshift-install wait-for bootstrap-complete --dir {{ user_path }}"
+    creates: "{{ user_path }}/auth"
 
 - name: '[INSTALL_CONFIG] Wait for the cluster'
   shell:
     cmd: "{{ user_path }}/openshift-install wait-for install-complete --dir {{ user_path }}"
+    creates: "{{ user_path }}/auth"
 
 - name: '[INSTALL_CONFIG] Create the kube filesystem'
   file:
@@ -32,7 +36,7 @@
   when:
     - local_kubeconfig is defined
 
-- name: '[INSTALL_CONFIG] Copy the Kubeconfig to the know location'
+- name: '[INSTALL_CONFIG] Copy the Kubeconfig to the known location'
   copy:
     src: "{{ user_path }}/auth/kubeconfig"
     dest: "~/.kube/config"

@@ -1,0 +1,15 @@
+---
+
+- name: Check that SSH private key is present in vault/ssh-key
+  delegate_to: localhost
+  stat:
+    path: "{{ playbook_dir }}/vault/ssh-key"
+  register: result
+  failed_when: not result.stat.exists
+
+- name: Check that SSH public key is present in vault/ssh-key.pub
+  delegate_to: localhost
+  stat:
+    path: "{{ playbook_dir }}/vault/ssh-key.pub"
+  register: result
+  failed_when: not result.stat.exists

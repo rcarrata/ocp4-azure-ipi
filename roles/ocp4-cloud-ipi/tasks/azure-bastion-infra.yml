@@ -11,19 +11,27 @@
         access: Allow
         priority: 1001
         direction: Inbound
-        direction: Inbound
+
+- name: Create Network Security Group that allows access to internal registry
+  azure_rm_securitygroup:
+    resource_group: "{{ azure_vm_resource_group }}"
+    name: "{{ azure_vm_name }}-disconnected"
+    rules:
       - name: Registry
         protocol: Tcp
         destination_port_range: 5000
         access: Allow
         priority: 1002
         direction: Inbound
+  when:
+    - cloud == "azure"
+    - mode == "disconnected"
 
 - name: Create VM
   azure_rm_virtualmachine:
     resource_group: "{{ azure_vm_resource_group }}"
     name: "{{ azure_vm_name }}"
-    vm_size: Standard_B1s
+    vm_size: "{{ azure_vm_size }}"
     admin_username: "{{ azure_vm_admin_username }}"
     ssh_public_keys:
       - key_data: "{{ azure_vm_admin_pub_key }}"
@@ -33,12 +41,19 @@
     subnet_name: "{{ azure_vm_subnet }}"
     public_ip_allocation_method: Dynamic
     ssh_password_enabled: false
+    managed_disk_type: Standard_LRS
+    os_disk_size_gb: "{{ azure_vm_os_disk_size_gb }}"
     image:
-      offer: CentOS
-      publisher: OpenLogic
-      sku: 8.0
-      version: latest
-      no_log: true
+      offer: "{{ azure_vm_image_offer }}"
+      publisher: "{{ azure_vm_image_publisher }}"
+      sku: "{{ azure_vm_image_sku }}"
+      version: "{{ azure_vm_image_version }}"
+      no_log: "{{ azure_vm_image_no_log }}"
+    tags:
+      type: "bastion"
+      cluster_name: "{{ cluster_name }}"
+      #TODO: expose RG in input if specified
+      #cluster_resource_group: "{{ cluster_resource_group }}"
   register: output
 
 - name: Get IP

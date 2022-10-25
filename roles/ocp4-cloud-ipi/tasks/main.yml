@@ -1,12 +1,27 @@
 ---
 
+##### Configure the prerequisites when running from AAP
+- block:
+    - import_tasks: handle-prereqs.yml
+  when:
+    - cloud == "azure"
+    - action == "provision-infra"
+    - private_ssh_key is defined
+
+##### Checking that prerequisites are satisfied
+- block:
+    - import_tasks: check-prereqs.yml
+  when:
+    - cloud == "azure"
+    - action == "provision-infra"
+
 ##### Tasks for a IPI CONNECTED Installation
 - block:
-    - import_tasks: azure-infra.yml
-    - import_tasks: download.yml
-    - import_tasks: create-config.yml
-    - import_tasks: install.yml
-    - import_tasks: print-info.yml
+    - include_tasks: azure-infra.yml
+    - include_tasks: download.yml
+    - include_tasks: create-config.yml
+    - include_tasks: install.yml
+    - include_tasks: print-info.yml
   when:
     - cloud == "azure"
     - mode == "public"
@@ -17,8 +32,8 @@
 
 ### Private/Disconnected Install of Infrastructure in Azure
 - block:
-    - import_tasks: azure-infra-private.yml # Azure Vnets / Subnets
-    - import_tasks: azure-bastion-infra.yml # Bastion Install
+    - include_tasks: azure-infra-private.yml # Azure Vnets / Subnets
+    - include_tasks: azure-bastion-infra.yml # Bastion Install
   when:
     - cloud == "azure"
     - mode == "private" or mode == "disconnected"
@@ -26,17 +41,26 @@
 
 ### Adding the Azure Private only for Private Installs and Egress Modes Azure firewall
 - block:
-    - import_tasks: azure-infra-firewall.yml        # Adding the Azure Firewall
+    - include_tasks: azure-infra-firewall.yml        # Adding the Azure Firewall
   when:
     - cloud == "azure"
     - mode == "private" or mode == "disconnected"
     - egress == "firewall"
     - action == "provision-infra"
 
+### Adding the Azure Private only for Private Installs and Egress Modes Azure NAT Gateway
+- block:
+    - include_tasks: azure-infra-nat-gateway.yml        # Adding the Azure NAT Gateway
+  when:
+    - cloud == "azure"
+    - mode == "private" or mode == "disconnected"
+    - egress == "natgateway"
+    - action == "provision-infra"
+
 ### Private/Disconnected Azure Login/Creds and Bastion Packages
 - block:
-    - import_tasks: bastion-azure-login.yml
-    - import_tasks: bastion-packages.yml
+    - include_tasks: bastion-azure-login.yml
+    - include_tasks: bastion-packages.yml
   when:
     - cloud == "azure"
     - mode == "private" or mode == "disconnected"
@@ -44,8 +68,8 @@
 
 ### Private Installation using mode=xxx as Outboundtype (default Proxy)
 - block:
-    - import_tasks: download.yml
-    - import_tasks: create-config.yml
+    - include_tasks: download.yml
+    - include_tasks: create-config.yml
   when:
     - cloud == "azure"
     - mode == "private"
@@ -53,10 +77,10 @@
 
 ### Disconnected installation using Mirror Registry
 - block:
-    - import_tasks: bastion-registry.yml
-    - import_tasks: download.yml
-    - import_tasks: bastion-mirror.yml
-    - import_tasks: create-config.yml
+    - include_tasks: bastion-registry.yml
+    - include_tasks: download.yml
+    - include_tasks: bastion-mirror.yml
+    - include_tasks: create-config.yml
   when:
     - cloud == "azure"
     - mode == "disconnected"
@@ -64,8 +88,8 @@
 
 ### Installation of the Openshift Cluster
 - block:
-    - import_tasks: install.yml
-    #- import_tasks: print-info.yml
+    - include_tasks: install.yml
+    #- include_tasks: print-info.yml
   when:
     - cloud == "azure"
     - action == "install"

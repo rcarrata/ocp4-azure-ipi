@@ -1,0 +1,5 @@
+# Azure NAT gateway vars (only working if egress=natgateway is set)
+azure_natgateway_name: az-ocp4-natgateway
+azure_natgateway_pip_name: az-ocp4-pip-natgateway
+
+azure_outboundtype: "UserDefinedRouting"
